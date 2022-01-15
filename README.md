@@ -6,4 +6,4 @@ install dependencies:
 
 run the app:
 
-    SET DEBUG=video-streaming-proxy:* & npm start
+    SET DEBUG=dlna-proxy:* & npm start

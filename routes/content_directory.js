@@ -8,8 +8,15 @@ var router = express.Router();
 
 /* GET users listing. */
 router.all('/control.xml', function(req, res, next) {
-  console.log("!!! control.xml !!!", req.rawHeaders, "\nBODY:", req.body);
-  const this_host = req.get('host');
+  //console.log("!!! control.xml !!!", req.rawHeaders, "\nBODY:", req.body);
+
+  /** TODO: probably more cleaner way for getting server's ip https://stackoverflow.com/a/38426473
+   * req.connection.localAddress and req.connection.localPort
+   * check for IPv6: https://nodejs.org/api/net.html#netisipv6input
+  */
+
+  const this_host_and_port = req.get('host');
+
   const results = `<DIDL-Lite xmlns="urn:schemas-upnp-org:metadata-1-0/DIDL-Lite/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:upnp="urn:schemas-upnp-org:metadata-1-0/upnp/" xmlns:dlna="urn:schemas-dlna-org:metadata-1-0/" xmlns:sec="http://www.sec.co.kr/" xmlns:xbmc="urn:schemas-xbmc-org:metadata-1-0/">
     <item id="root/1-bigbuckbunny" parentID="0" restricted="1">
       <dc:title>Big Buck Bunny (3D)</dc:title>
@@ -30,7 +37,7 @@ router.all('/control.xml', function(req, res, next) {
       <dc:publisher>Unknown</dc:publisher>
       <upnp:genre>Unknown</upnp:genre>
       <upnp:episodeSeason>0</upnp:episodeSeason>
-      <res size="2601836427" protocolInfo="http-get:*:video/mp4:DLNA.ORG_PN=MPEG4_P2_SP_AAC;DLNA.ORG_OP=01;DLNA.ORG_CI=0;DLNA.ORG_FLAGS=01500000000000000000000000000000">http://${this_host}/proxy/funstudio/bunny.mp4</res>
+      <res size="2601836427" protocolInfo="http-get:*:video/mp4:DLNA.ORG_PN=MPEG4_P2_SP_AAC;DLNA.ORG_OP=01;DLNA.ORG_CI=0;DLNA.ORG_FLAGS=01500000000000000000000000000000">http://${this_host_and_port}/proxy/stream/funstudio/bunny.mp4</res>
       <xbmc:rating>0.0</xbmc:rating>
       <xbmc:userrating>0</xbmc:userrating>
       <upnp:class>object.item.videoItem</upnp:class>
