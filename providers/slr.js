@@ -19,7 +19,7 @@ const SLR = function () {
         return dir;
     };
 
-    self.get_video_url = function (scene_id) {
+    self.get_stream_url = function (scene_id) {
         const video_url = "https://trailers.czechvr.com/czechvr/videos/download/468/468-czechvr-3d-7680x3840-60fps-oculusrift_uhq_h265-fullvideo-1.mp4";
         return video_url;
     };

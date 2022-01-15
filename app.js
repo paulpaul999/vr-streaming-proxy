@@ -7,6 +7,12 @@ var indexRouter = require('./routes/index');
 var cd_router = require('./routes/content_directory');
 var proxy_router = require('./routes/proxy_router');
 
+/* Providers */
+const provider_manager = require('./providers/manager');
+const provider_slr = require('./providers/slr');
+provider_manager.register(provider_slr);
+
+/* Express */
 var app = express();
 
 app.use(logger('dev'));
