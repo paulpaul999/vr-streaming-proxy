@@ -3,30 +3,45 @@ const http = require('http');
 
 const { pipeline } = require('stream');
 
-const submit_to_proxy = function (req, res, dest_url) {
+const HTTPS_REJECT_UNAUTHORIZED = false;
+
+const filter_object = function (object, keys_whitelist) {
+    const result = {};
+    keys_whitelist.forEach(key => {
+        const value = object[key];
+        if (value !== undefined) {
+            result[key] = value;
+        }
+    });
+    return result;
+};
+
+const proxify_request = function (req, res, url) {
     //req.url = dest_url
-    const dest_url_parsed = new URL(dest_url);
+    const url_parsed = new URL(url);
     const req_options = {
-        rejectUnauthorized: false,
+        rejectUnauthorized: HTTPS_REJECT_UNAUTHORIZED,
         headers: {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36",
+            'Mein': ""
         }
     };
 
-    const handler = dest_url_parsed.protocol === 'https:' ? https : http;
-    const request = handler.request(dest_url_parsed, req_options, response => {
-        console.log('statusCode:', response.statusCode);
-        console.log('headers:', response.headers);
+    const handler = url_parsed.protocol === 'https:' ? https : http;
+    const proxy_request = handler.request(url_parsed, req_options, proxy_response => {
+        console.log('statusCode:', proxy_response.statusCode);
+        console.log('headers:', proxy_response.headers);
 
-        const client_response_code = response.statusCode;
-        const client_response_headers = {
+        const res_code = proxy_response.statusCode;
+        const res_headers = {
             'Content-Type': 'video/mp4',
+            'Mein': "undefined"
             //'Content-Length': '100000000'
         };
-        res.writeHead(client_response_code, client_response_headers);
-
+        res.writeHead(res_code, res_headers);
+        
         pipeline(
-            response,
+            proxy_response,
             res,
             err => {
                 if (err)
@@ -41,17 +56,17 @@ const submit_to_proxy = function (req, res, dest_url) {
         // });
     });
 
-    request.on('error', error => {
+    proxy_request.on('error', error => {
         console.error(error)
     });
 
-    request.end();
-    console.log(dest_url_parsed);
+    proxy_request.end();
+    console.log(url_parsed);
 };
 
 const server = http.createServer(function (req, res) {
     const url = "https://trailers.czechvr.com/czechvr/videos/download/468/468-czechvr-3d-7680x3840-60fps-oculusrift_uhq_h265-fullvideo-1.mp4";
-    submit_to_proxy(req, res, url);
+    proxify_request(req, res, url);
 });
   
 server.listen(3000);
