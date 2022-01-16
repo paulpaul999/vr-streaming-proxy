@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 
 const https = require('https');
-const url = require('url');
 
 const provider_manager = require('../providers/manager');
 const proxify = require('../utils/proxify');
