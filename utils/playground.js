@@ -75,7 +75,7 @@ const PASSTHROUGH_RES_HEADERS = [
  */
 const proxify_request = function (req, res, url, options, _recursion_level) {
     console.log('SimpleProxy:', url);
-    if (_recursion_level === undefined) { _recursion_level = 0; }
+    if (typeof _recursion_level !== 'number') { _recursion_level = 0; }
 
     const url_parsed = new URL(url);
 
