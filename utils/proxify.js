@@ -130,31 +130,32 @@ const proxify_request = function (req, res, url, options, _recursion_level) {
     proxy_request.end();
 };
 
-const server = http.createServer(function (req, res) {
-    let url;
-    url = "https://trailers.czechvr.com/czechvr/videos/download/468/468-czechvr-3d-7680x3840-60fps-oculusrift_uhq_h265-fullvideo-1.mp4";
-    url = "http://www.czechvr.com/category/1816-a-sweet-surprise-468-cvr/468-czechvr-big.jpg"; /** redirects with 301 to https full url */
-    // url = "https://httpbin.org/gzip";
+if (require.main === module) {
+    const server = http.createServer(function (req, res) {
+        let url;
+        const BASE_PATH = "/url/";
+        url = req.url.slice(BASE_PATH.length);
 
-    const options = {
-        user_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36",
-        https_reject_unauthorized: false,
-        max_redirects: 10,
-    };
-    proxify_request(req, res, url, options);
-});
-  
-server.listen(3000);
+        // url = "https://trailers.czechvr.com/czechvr/videos/download/468/468-czechvr-3d-7680x3840-60fps-oculusrift_uhq_h265-fullvideo-1.mp4";
+        // url = "http://www.czechvr.com/category/1816-a-sweet-surprise-468-cvr/468-czechvr-big.jpg"; /** redirects with 301 to https full url */
+        // url = "https://httpbin.org/gzip";
 
-const myURL = new URL('http:/wiki.org/foo?asd=123&def72394#hallo', 'https://example.org/foo?asd=333');
-console.log('loggo', myURL.toString());
+        const options = {
+            user_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36",
+            https_reject_unauthorized: false,
+            max_redirects: 10,
+        };
+        proxify_request(req, res, url, options);
+    });
+    
+    server.listen(3000);
 
-// submit_to_proxy(1,2, "https://img2.badoink.com/content/scenes/325522/a-roll-in-the-hay-325522.jpg");
-// submit_to_proxy(1,2, "https://www.czechvr.com/category/1816-a-sweet-surprise-468-cvr/468-czechvr-big.jpg");
-// submit_to_proxy(1,2, "https://httpbin.org/get");
-// submit_to_proxy(1,2, "http://httpbin.org/get");
-// submit_to_proxy(1,2, "https://self-signed.badssl.com/");
-
+    // submit_to_proxy(1,2, "https://img2.badoink.com/content/scenes/325522/a-roll-in-the-hay-325522.jpg");
+    // submit_to_proxy(1,2, "https://www.czechvr.com/category/1816-a-sweet-surprise-468-cvr/468-czechvr-big.jpg");
+    // submit_to_proxy(1,2, "https://httpbin.org/get");
+    // submit_to_proxy(1,2, "http://httpbin.org/get");
+    // submit_to_proxy(1,2, "https://self-signed.badssl.com/");
+}
 /**
  * TODO:
  * - Streamify https://stackoverflow.com/a/46146154 maybe Pipeline? https://stackoverflow.com/q/58875655
@@ -167,3 +168,5 @@ console.log('loggo', myURL.toString());
  * - Cherrypick dicts https://stackoverflow.com/a/1098955
  * - Follow Redirects without lib: https://stackoverflow.com/a/45777753 and https://stackoverflow.com/a/54162633
  */
+
+ module.exports = { proxify_request };
