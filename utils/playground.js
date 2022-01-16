@@ -1,8 +1,10 @@
 const https = require('https');
 const http = require('http');
 
+const { pipeline } = require('stream');
+
 const submit_to_proxy = function (req, res, dest_url) {
-    req.url = dest_url
+    //req.url = dest_url
     const dest_url_parsed = new URL(dest_url);
     const req_options = {
         rejectUnauthorized: false,
@@ -12,13 +14,24 @@ const submit_to_proxy = function (req, res, dest_url) {
     };
 
     const handler = dest_url_parsed.protocol === 'https:' ? https : http;
-    const request = handler.request(dest_url_parsed, req_options, res => {
-        console.log('statusCode:', res.statusCode);
-        console.log('headers:', res.headers);
-      
-        res.on('data', (d) => {
+    const request = handler.request(dest_url_parsed, req_options, response => {
+        console.log('statusCode:', response.statusCode);
+        console.log('headers:', response.headers);
+
+        pipeline(
+            response,
+            res,
+            err => {
+                if (err)
+                    console.error('Pipeline failed.', err);
+                else
+                    console.log('Pipeline succeeded.');
+            }
+        );
+        
+        // res.on('data', (d) => {
         //   process.stdout.write(d);
-        });
+        // });
     });
 
     request.on('error', error => {
@@ -29,8 +42,15 @@ const submit_to_proxy = function (req, res, dest_url) {
     console.log(dest_url_parsed);
 };
 
-//submit_to_proxy(1,2, "https://img2.badoink.com/content/scenes/325522/a-roll-in-the-hay-325522.jpg");
-submit_to_proxy(1,2, "https://www.czechvr.com/category/1816-a-sweet-surprise-468-cvr/468-czechvr-big.jpg");
+const server = http.createServer(function (req, res) {
+    const url = "https://trailers.czechvr.com/czechvr/videos/download/468/468-czechvr-3d-7680x3840-60fps-oculusrift_uhq_h265-fullvideo-1.mp4";
+    submit_to_proxy(req, res, url);
+});
+  
+server.listen(3000);
+
+// submit_to_proxy(1,2, "https://img2.badoink.com/content/scenes/325522/a-roll-in-the-hay-325522.jpg");
+// submit_to_proxy(1,2, "https://www.czechvr.com/category/1816-a-sweet-surprise-468-cvr/468-czechvr-big.jpg");
 // submit_to_proxy(1,2, "https://httpbin.org/get");
 // submit_to_proxy(1,2, "http://httpbin.org/get");
 // submit_to_proxy(1,2, "https://self-signed.badssl.com/");
