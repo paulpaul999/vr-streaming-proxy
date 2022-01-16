@@ -89,8 +89,8 @@ const proxify_request = function (req, res, url, options, _recursion_level) {
 
     const handler = url_parsed.protocol === 'https:' ? https : http;
     const proxy_request = handler.request(url_parsed, proxy_request_options, server_response => {
-        console.log('statusCode:', server_response.statusCode);
-        console.log('headers:', server_response.headers);
+        // console.log('statusCode:', server_response.statusCode);
+        // console.log('headers:', server_response.headers);
 
         /* follow redirect */
         if (server_response.headers.location) { /* NOTE: Also check for 301/302 code ? */
@@ -125,7 +125,8 @@ const proxify_request = function (req, res, url, options, _recursion_level) {
     });
 
     proxy_request.on('error', error => {
-        console.error(error)
+        console.error(error);
+        return res.writeHead(500).end("Proxy Error");
     });
 
     proxy_request.end();
