@@ -76,7 +76,8 @@ const proxify_request = function (req, res, url, options, _recursion_level) {
     console.log('SimpleProxy:', url);
     if (typeof _recursion_level !== 'number') { _recursion_level = 0; }
 
-    const url_parsed = new URL(url);
+    let url_parsed;
+    try { url_parsed = new URL(url); } catch (error) { return res.writeHead(400).end("Invalid URL"); }
 
     const proxy_request_headers = filter_object(req.headers, PASSTHROUGH_REQ_HEADERS);
     if (options?.user_agent) { proxy_request_headers['user-agent'] = options.user_agent; }
