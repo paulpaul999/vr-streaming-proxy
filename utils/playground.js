@@ -26,6 +26,7 @@ const PASSTHROUGH_REQ_HEADERS = [
     'if-range',
 
     /* Misc */
+    'date',
     'if-match',
     'if-none-match',
     'if-modified-since',
@@ -44,10 +45,32 @@ const PASSTHROUGH_RES_HEADERS = [
     'content-range',
 
     /* Misc */
+    'date',
     'etag',
     'last-modified',
 ];
 
+/**
+ * Simple Proxy to serve a given URL.
+ * 
+ * Model: 
+ *   [Client]               [Proxy]                     [Server]
+ *      |                      |                            |
+ *      | ----- request -----> |                            |
+ *      |                      | ------ proxy_request ----> |
+ *      |                      | <---- server_response ---- |
+ *      | <---- response ----- |                            |
+ *      |                      |                            |
+ * 
+ * Traits:
+ *   - Stateless
+ *   - Basic HTTP headers are passed through
+ *   - No Cookies support
+ * 
+ * @param {http.IncomingMessage} req - Node.js standard req object
+ * @param {http.ServerResponse} res - Node.js standard res object
+ * @param {String} url - URL to fetch from server
+ */
 const proxify_request = function (req, res, url) {
     //req.url = dest_url
     const url_parsed = new URL(url);
