@@ -66,6 +66,7 @@ const PASSTHROUGH_RES_HEADERS = [
  *   - Stateless
  *   - Basic HTTP headers are passed through
  *   - No Cookies support
+ *   - No following of redirects (yet)
  * 
  * @param {http.IncomingMessage} req - Node.js standard req object
  * @param {http.ServerResponse} res - Node.js standard res object
@@ -116,7 +117,9 @@ const proxify_request = function (req, res, url) {
 };
 
 const server = http.createServer(function (req, res) {
-    let url = "https://trailers.czechvr.com/czechvr/videos/download/468/468-czechvr-3d-7680x3840-60fps-oculusrift_uhq_h265-fullvideo-1.mp4";
+    let url;
+    url = "https://trailers.czechvr.com/czechvr/videos/download/468/468-czechvr-3d-7680x3840-60fps-oculusrift_uhq_h265-fullvideo-1.mp4";
+    // url = "https://httpbin.org/gzip";
     proxify_request(req, res, url);
 });
   
@@ -138,5 +141,5 @@ server.listen(3000);
  *     -> Response Code 206 -> also pass other response codes?
  * - Passthrough gunzip encoding stuff? maybe not? src: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Encoding
  * - Cherrypick dicts https://stackoverflow.com/a/1098955
- * - Follow Redirects without lib: https://stackoverflow.com/a/45777753
+ * - Follow Redirects without lib: https://stackoverflow.com/a/45777753 and https://stackoverflow.com/a/54162633
  */
