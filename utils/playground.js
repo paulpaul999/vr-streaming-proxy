@@ -29,7 +29,16 @@ const submit_to_proxy = function (req, res, dest_url) {
     console.log(dest_url_parsed);
 };
 
-// submit_to_proxy(1,2, "https://img2.badoink.com/content/scenes/325522/a-roll-in-the-hay-325522.jpg");
-// submit_to_proxy(1,2, "https://httpbin.org/get");
-submit_to_proxy(1,2, "http://httpbin.org/get");
+//submit_to_proxy(1,2, "https://img2.badoink.com/content/scenes/325522/a-roll-in-the-hay-325522.jpg");
+// submit_to_proxy(1,2, "https://www.czechvr.com/category/1816-a-sweet-surprise-468-cvr/468-czechvr-big.jpg");
+submit_to_proxy(1,2, "https://httpbin.org/get");
+// submit_to_proxy(1,2, "http://httpbin.org/get");
 // submit_to_proxy(1,2, "https://self-signed.badssl.com/");
+
+/**
+ * TODO:
+ * - Streamify https://stackoverflow.com/a/46146154
+ * - Passthrough Content Type Headers
+ * - Passthrough Range request headers
+ * - Passthrough gunzip encoding stuff?
+ */
