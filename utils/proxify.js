@@ -113,9 +113,9 @@ const proxify_request = function (req, res, url, options, _recursion_level) {
             res,
             err => {
                 if (err)
-                    console.error('Premature close. Or Pipeline failed.', err);
+                    console.error('SimpleProxy', 'Premature close. Or Pipeline failed.');
                 else
-                    console.log('Pipeline succeeded.');
+                    console.log('SimpleProxy', 'Pipeline succeeded.');
             }
         );
         
