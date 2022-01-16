@@ -18,6 +18,13 @@ const submit_to_proxy = function (req, res, dest_url) {
         console.log('statusCode:', response.statusCode);
         console.log('headers:', response.headers);
 
+        const client_response_code = response.statusCode;
+        const client_response_headers = {
+            'Content-Type': 'video/mp4',
+            //'Content-Length': '100000000'
+        };
+        res.writeHead(client_response_code, client_response_headers);
+
         pipeline(
             response,
             res,
@@ -64,4 +71,5 @@ server.listen(3000);
  * - Passthrough Range request headers -> https://developer.mozilla.org/en-US/docs/Web/HTTP/Range_requests
  *     -> Response Code 206 -> also pass other response codes?
  * - Passthrough gunzip encoding stuff? maybe not? src: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Encoding
+ * - Cherrypick dicts https://stackoverflow.com/a/1098955
  */
