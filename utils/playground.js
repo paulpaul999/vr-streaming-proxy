@@ -113,7 +113,6 @@ const proxify_request = function (req, res, url) {
     });
 
     proxy_request.end();
-    console.log(url_parsed);
 };
 
 const server = http.createServer(function (req, res) {
@@ -131,7 +130,7 @@ server.listen(3000);
 
 /**
  * TODO:
- * - Streamify https://stackoverflow.com/a/46146154 mayber Pipeline? https://stackoverflow.com/q/58875655
+ * - Streamify https://stackoverflow.com/a/46146154 maybe Pipeline? https://stackoverflow.com/q/58875655
  * - Headers: https://nodejs.org/api/http.html#responsewriteheadstatuscode-statusmessage-headers
  * - Passthrough Content Type Headers
  * - Passthrough Content-Length
