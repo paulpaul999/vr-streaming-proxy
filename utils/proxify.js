@@ -66,12 +66,11 @@ const PASSTHROUGH_RES_HEADERS = [
  *   - Stateless
  *   - Basic HTTP headers are passed through
  *   - No Cookies support
- *   - No following of redirects (yet)
  * 
  * @param {http.IncomingMessage} req - Node.js standard req object
  * @param {http.ServerResponse} res - Node.js standard res object
  * @param {String} url - URL to fetch from server
- * @param {Object} options - 
+ * @param {Object} options
  */
 const proxify_request = function (req, res, url, options, _recursion_level) {
     console.log('SimpleProxy:', url);
