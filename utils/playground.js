@@ -16,32 +16,61 @@ const filter_object = function (object, keys_whitelist) {
     return result;
 };
 
+const PASSTHROUGH_REQ_HEADERS = [
+    /* Basic headers */
+    'accept-encoding',
+    'user-agent',
+
+    /* Range requests */
+    'range',
+    'if-range',
+
+    /* Misc */
+    'if-match',
+    'if-none-match',
+    'if-modified-since',
+    'if-unmodified-since',
+];
+
+const PASSTHROUGH_RES_HEADERS = [
+    /* Basic headers */
+    'content-encoding',
+    'content-length',
+    'content-type',
+    'content-disposition',
+
+    /* Range requests */
+    'accept-ranges',
+    'content-range',
+
+    /* Misc */
+    'etag',
+    'last-modified',
+];
+
 const proxify_request = function (req, res, url) {
     //req.url = dest_url
     const url_parsed = new URL(url);
-    const req_options = {
+
+    const proxy_request_headers = filter_object(req.headers, PASSTHROUGH_REQ_HEADERS);
+    proxy_request_headers['user-agent'] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36";
+
+    const proxy_request_options = {
         rejectUnauthorized: HTTPS_REJECT_UNAUTHORIZED,
-        headers: {
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36",
-            'Mein': ""
-        }
+        headers: proxy_request_headers,
     };
 
     const handler = url_parsed.protocol === 'https:' ? https : http;
-    const proxy_request = handler.request(url_parsed, req_options, proxy_response => {
-        console.log('statusCode:', proxy_response.statusCode);
-        console.log('headers:', proxy_response.headers);
+    const proxy_request = handler.request(url_parsed, proxy_request_options, server_response => {
+        console.log('statusCode:', server_response.statusCode);
+        console.log('headers:', server_response.headers);
 
-        const res_code = proxy_response.statusCode;
-        const res_headers = {
-            'Content-Type': 'video/mp4',
-            'Mein': "undefined"
-            //'Content-Length': '100000000'
-        };
+        const res_code = server_response.statusCode;
+        const res_headers = filter_object(server_response.headers, PASSTHROUGH_RES_HEADERS);
         res.writeHead(res_code, res_headers);
         
         pipeline(
-            proxy_response,
+            server_response,
             res,
             err => {
                 if (err)
@@ -65,7 +94,7 @@ const proxify_request = function (req, res, url) {
 };
 
 const server = http.createServer(function (req, res) {
-    const url = "https://trailers.czechvr.com/czechvr/videos/download/468/468-czechvr-3d-7680x3840-60fps-oculusrift_uhq_h265-fullvideo-1.mp4";
+    let url = "https://trailers.czechvr.com/czechvr/videos/download/468/468-czechvr-3d-7680x3840-60fps-oculusrift_uhq_h265-fullvideo-1.mp4";
     proxify_request(req, res, url);
 });
   
@@ -87,4 +116,5 @@ server.listen(3000);
  *     -> Response Code 206 -> also pass other response codes?
  * - Passthrough gunzip encoding stuff? maybe not? src: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Encoding
  * - Cherrypick dicts https://stackoverflow.com/a/1098955
+ * - Follow Redirects without lib: https://stackoverflow.com/a/45777753
  */
