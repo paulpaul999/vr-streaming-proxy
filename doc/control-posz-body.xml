@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<s:Envelope s:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" xmlns:s="http://schemas.xmlsoap.org/soap/envelope/">
+    <s:Body>
+        <u:Browse xmlns:u="urn:schemas-upnp-org:service:ContentDirectory:1">
+            <ObjectID>library://video/files.xml/</ObjectID>
+            <BrowseFlag>BrowseDirectChildren</BrowseFlag>
+            <Filter>*</Filter>
+            <StartingIndex>0</StartingIndex>
+            <RequestedCount>500000</RequestedCount>
+            <SortCriteria>+dc:title</SortCriteria>
+        </u:Browse>
+    </s:Body>
+</s:Envelope>
