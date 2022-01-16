@@ -1,4 +1,5 @@
 const https = require('https');
+const http = require('http');
 
 const submit_to_proxy = function (req, res, dest_url) {
     req.url = dest_url
@@ -10,7 +11,8 @@ const submit_to_proxy = function (req, res, dest_url) {
         }
     };
 
-    const request = https.request(dest_url_parsed, req_options, res => {
+    const handler = dest_url_parsed.protocol === 'https:' ? https : http;
+    const request = handler.request(dest_url_parsed, req_options, res => {
         console.log('statusCode:', res.statusCode);
         console.log('headers:', res.headers);
       
@@ -24,9 +26,10 @@ const submit_to_proxy = function (req, res, dest_url) {
     });
 
     request.end();
-    //console.log(request);
+    console.log(dest_url_parsed);
 };
 
 // submit_to_proxy(1,2, "https://img2.badoink.com/content/scenes/325522/a-roll-in-the-hay-325522.jpg");
-//submit_to_proxy(1,2, "https://httpbin.org/get");
-submit_to_proxy(1,2, "https://self-signed.badssl.com/");
+// submit_to_proxy(1,2, "https://httpbin.org/get");
+submit_to_proxy(1,2, "http://httpbin.org/get");
+// submit_to_proxy(1,2, "https://self-signed.badssl.com/");
