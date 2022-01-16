@@ -23,7 +23,7 @@ const submit_to_proxy = function (req, res, dest_url) {
             res,
             err => {
                 if (err)
-                    console.error('Pipeline failed.', err);
+                    console.error('Premature close. Or Pipeline failed.', err);
                 else
                     console.log('Pipeline succeeded.');
             }
