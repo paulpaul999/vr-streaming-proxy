@@ -2,7 +2,7 @@
 
 Proxy to enable true internet streaming for DLNA video players.
 
-Support via Bitcoin: [bc1qwthpp9xtqlq84598436phgze3dkzx8g7egseph](bitcoin:bc1qwthpp9xtqlq84598436phgze3dkzx8g7egseph)
+Support via bitcoin:bc1qwthpp9xtqlq84598436phgze3dkzx8g7egseph
 
 ## Install and run from source code
 
