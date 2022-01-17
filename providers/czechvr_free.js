@@ -31,7 +31,7 @@ const CzechVRFree = function () {
             title: "[5k-max] Endless Fun",
             thumbnail: "https://www.czechvrnetwork.com/category/czech-vr-fetish/1553-endless-fun-242-cvf/242-czechvrfetish-big.jpg",
             video_urls: {
-                '8k': "https://trailers.czechvr.com/czechvrfetish/videos/download/242/242-czechvrfetish-3d-5400x2700-60fps-oculusrift_uhq_h265-fullvideo-1.mp4",
+                '8k': "https://trailers.czechvr.com/czechvrfetish/videos/download/242/242-czechvrfetish-3d-5400x2700-60fps-oculusrift_h265-fullvideo-1.mp4",
                 '5k': "https://trailers.czechvr.com/czechvrfetish/videos/download/242/242-czechvrfetish-3d-5400x2700-60fps-oculusrift_h265-fullvideo-1.mp4",
                 '4k': "https://trailers.czechvr.com/czechvrfetish/videos/download/242/242-czechvrfetish-3d-3840x1920-60fps-oculusrift-fullvideo-1.mp4",
             }
