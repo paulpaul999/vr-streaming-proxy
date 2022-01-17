@@ -1,6 +1,10 @@
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
+
+const bodyParser = require('body-parser');
+require('body-parser-xml')(bodyParser);
+
 var logger = require('morgan');
 
 var indexRouter = require('./routes/index');
@@ -9,8 +13,8 @@ var proxy_router = require('./routes/proxy_router');
 
 /* Providers */
 const provider_manager = require('./providers/manager');
-const provider_slr = require('./providers/slr');
-provider_manager.register(provider_slr);
+const provider_czechvr = require('./providers/czechvr');
+provider_manager.register(provider_czechvr);
 
 /* Express */
 var app = express();
@@ -22,7 +26,7 @@ app.use(logger('dev'));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-app.use('/ContentDirectory', cd_router);
+app.use('/ContentDirectory', bodyParser.xml(), cd_router);
 app.use('/proxy', proxy_router)
 
 module.exports = app;

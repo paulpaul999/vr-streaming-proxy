@@ -7,6 +7,10 @@
 
 - Stash: https://github.com/stashapp/CommunityScrapers
 
+## DLNA / UPNP / Spec
+
+- Other formats than MP4-based: https://github.com/evands/plex/blob/00e8ffff3e3cc270341b4a10610ab649bf5186c0/xbmc/UPnP.cpp#L361
+
 ## Distribute
 
 - https://www.electronjs.org/docs/v14-x-y/tutorial/quick-start#package-and-distribute-your-application
