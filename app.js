@@ -15,6 +15,8 @@ var proxy_router = require('./routes/proxy_router');
 const provider_manager = require('./providers/manager');
 const provider_czechvr = require('./providers/czechvr');
 provider_manager.register(provider_czechvr);
+const provider_czechvr_free = require('./providers/czechvr_free');
+provider_manager.register(provider_czechvr_free);
 
 /* Express */
 var app = express();

@@ -7,7 +7,7 @@
   </specVersion>
   <device>
     <deviceType>urn:schemas-upnp-org:device:MediaServer:1</deviceType>
-    <friendlyName>My DLNA Proxy</friendlyName>
+    <friendlyName>DLNA Proxy</friendlyName>
     <manufacturer>XBMC Foundation</manufacturer>
     <manufacturerURL>http://kodi.tv/</manufacturerURL>
     <modelDescription>Kodi - Media Server</modelDescription>
@@ -15,7 +15,6 @@
     <modelNumber>18.8 (18.8.0) Git:20200727-45686bddb1</modelNumber>
     <modelURL>http://kodi.tv/</modelURL>
     <UDN>uuid:f40c2981-7329-40b7-8b04-27f187aecfb5</UDN>
-    <presentationURL>http://192.168.2.117:8080/</presentationURL>
     <dlna:X_DLNADOC xmlns:dlna="urn:schemas-dlna-org:device-1-0">DMS-1.50</dlna:X_DLNADOC>
     <serviceList>
       <service>

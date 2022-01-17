@@ -5,10 +5,12 @@ const {simple_get} = require('../utils/simple-http');
 
 const CzechVR = function () {
     const PROVIDER_ID = 'cvr';
-    const DISPLAYNAME = 'CzechVR (free)'
+    const DISPLAYNAME = 'CzechVR (Trailers)'
     const self = {};
 
-    let db = {};
+    let db = [
+
+    ];
 
     self._load = async function () {
         const buffer = await simple_get(new URL("https://www.czechvrnetwork.com/members/deovr"));
@@ -79,16 +81,7 @@ const CzechVR = function () {
 
             return dir;
         }
-
-        const dir = [
-            {
-                type: 'vid',
-                dlna_id: '12345', /* video_id */
-                displayname: 'A Sweet Surprise _180_LR.mp4',
-                thumbnail_url: 'https://www.czechvr.com/category/1816-a-sweet-surprise-468-cvr/468-czechvr-big.jpg',
-                thumbnail_mimetype: 'image/jpeg',
-            }
-        ];
+        
         return [];
     };
 
