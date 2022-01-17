@@ -17,6 +17,8 @@ const provider_czechvr = require('./providers/czechvr');
 provider_manager.register(provider_czechvr);
 const provider_czechvr_free = require('./providers/czechvr_free');
 provider_manager.register(provider_czechvr_free);
+const provider_slr_poc = require('./providers/slr_poc');
+provider_manager.register(provider_slr_poc);
 
 /* Express */
 var app = express();
