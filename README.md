@@ -7,7 +7,7 @@
 - npm
 
 
-Download the source as [ZIP archive](./archive/refs/heads/main.zip) or clone it with git:
+Download the source as [ZIP archive](https://github.com/paulpaul999/dlna-proxy/archive/refs/heads/main.zip) **OR** clone it with git:
 
 ```
 git clone https://github.com/paulpaul999/dlna-proxy.git
@@ -22,9 +22,3 @@ Finally, run the server with:
 
     npm start
     
-
-## Development
-
-run the app:
-
-    SET DEBUG=dlna-proxy:* & npm start
