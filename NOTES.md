@@ -2,6 +2,7 @@
 
 - Cookies in client role: https://stackoverflow.com/questions/33506393/node-js-cookie-with-request-jar
 - Module Types: https://stackoverflow.com/questions/57492546/what-is-the-difference-between-js-and-mjs-files
+- CommonJS vs ESM: https://github.com/sindresorhus/got/issues/1789
 
 ## Scrapers
 
@@ -28,4 +29,6 @@ https://www.electronjs.org/docs/v14-x-y/tutorial/quick-start#package-and-distrib
 ```
 npm install --save-dev @electron-forge/cli
 npx electron-forge import
+
+npm run make
 ```
