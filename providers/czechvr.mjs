@@ -1,5 +1,5 @@
 //import got from 'got';
-const {simple_get} = require('../utils/simple-http');
+import {simple_get} from '../utils/simple-http.mjs';
 
 /** Free Videos: https://www.czechvr.com/free-full-vr-porn-videos-download */
 
@@ -112,4 +112,4 @@ const CzechVR = function () {
 
 const czechvr = CzechVR();
 
-module.exports = czechvr;
+export default czechvr;

@@ -1,10 +1,10 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
 
-const https = require('https');
+import https from 'https';
 
-const provider_manager = require('../providers/manager');
-const proxify = require('../utils/proxify');
+import provider_manager from '../providers/manager.mjs';
+import proxify from '../utils/proxify.mjs';
 
 
 router.get('/url/*', function(req, res, next) {
@@ -21,4 +21,4 @@ router.get('/stream/:provider_id/:stream_id', function(req, res, next) {
 });
 
 
-module.exports = router;
+export default router;

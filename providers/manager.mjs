@@ -66,4 +66,4 @@ const Manager = function () {
 
 const manager_instance = Manager();
 
-module.exports = manager_instance;
+export default manager_instance;

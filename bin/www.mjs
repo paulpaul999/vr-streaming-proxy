@@ -4,16 +4,17 @@
  * Module dependencies.
  */
 
-var app = require('../app');
-var debug = require('debug')('dlna-proxy:server');
-var http = require('http');
+import app from '../app.mjs';
+import debug from 'debug';
+debug('dlna-proxy:server');
+import http from 'http';
 
 /**
  * SSDP Server
  */
 
-const SSDP = require('node-ssdp').Server;
-const ssdp_server = new SSDP({
+import node_ssdp from 'node-ssdp';
+const ssdp_server = new node_ssdp.Server({
     location: {
         port: 3000,
         path: '/description.xml'

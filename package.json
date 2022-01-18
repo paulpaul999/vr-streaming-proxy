@@ -5,7 +5,8 @@
   "version": "1.0.0",
   "license": "UNLICENSED",
   "private": true,
-  "main": "bin/www",
+  "type": "module",
+  "main": "bin/www.mjs",
   "scripts": {
     "start": "electron ."
   },

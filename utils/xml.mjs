@@ -1,7 +1,7 @@
 /**
  * https://stackoverflow.com/a/27979933
  */
-function escape_xml(unsafe) {
+export function escape_xml(unsafe) {
     return unsafe.replace(/[<>&'"]/g, function (c) {
         switch (c) {
             case '<': return '&lt;';
@@ -13,4 +13,4 @@ function escape_xml(unsafe) {
     });
 }
 
-module.exports = { escape_xml };
+// module.exports = { escape_xml };

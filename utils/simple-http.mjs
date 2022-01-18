@@ -1,5 +1,5 @@
-const https = require('https');
-const http = require('http');
+import https from 'https';
+import http from 'http';
 
 /**
  * Src: https://stackoverflow.com/a/67729663
@@ -7,7 +7,7 @@ const http = require('http');
  * @param {*} stream 
  * @returns 
  */
-const stream2buffer = function (stream) {
+export const stream2buffer = function (stream) {
     return new Promise((resolve, reject) => {
         const _buf = [];
 
@@ -17,7 +17,7 @@ const stream2buffer = function (stream) {
     });
 }
 
-const simple_get = function (url_object) {
+export const simple_get = function (url_object) {
     return new Promise((resolve, reject) => {
         const options = {
             method: 'GET'
@@ -37,7 +37,7 @@ const simple_get = function (url_object) {
     });
 };
 
-if (require.main === module) {
+if (false) { // CommonJS (require.main === module) {
     const main = async function (params) {
         const buffer = await simple_get(new URL("https://httpbin.org/get"));
         const json = JSON.parse(buffer);
@@ -46,4 +46,4 @@ if (require.main === module) {
     main().then(console.log);
 }
 
-module.exports = { simple_get };
+// module.exports = { simple_get };

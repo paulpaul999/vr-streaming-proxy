@@ -1,9 +1,9 @@
-var express = require('express');
-const { escape_xml } = require('../utils/xml');
+import express from 'express';
+import { escape_xml } from '../utils/xml.mjs';
 
-var router = express.Router();
+const router = express.Router();
 
-const provider_manager = require('../providers/manager');
+import provider_manager from '../providers/manager.mjs';
 
 const DLNA_MIMETYPE_LOOKUP = {
     "audio/mpeg": "DLNA.ORG_PN=MP3",
@@ -142,4 +142,4 @@ router.all('/control.xml', function (req, res, next) {
     res.type('text/xml').send(m);
 });
 
-module.exports = router;
+export default router;
