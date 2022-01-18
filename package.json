@@ -6,7 +6,7 @@
   "license": "UNLICENSED",
   "private": true,
   "type": "module",
-  "main": "bin/www.mjs",
+  "main": "bin/www.cjs",
   "scripts": {
     "start": "electron ."
   },
