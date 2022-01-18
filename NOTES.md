@@ -2,7 +2,10 @@
 
 - Cookies in client role: https://stackoverflow.com/questions/33506393/node-js-cookie-with-request-jar
 - Module Types: https://stackoverflow.com/questions/57492546/what-is-the-difference-between-js-and-mjs-files
-- CommonJS vs ESM: https://github.com/sindresorhus/got/issues/1789
+
+## ESM vs CommonJS
+- https://github.com/sindresorhus/got/issues/1789
+- https://stackoverflow.com/a/62749284
 
 ## Scrapers
 
