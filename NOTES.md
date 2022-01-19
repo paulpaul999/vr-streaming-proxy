@@ -33,6 +33,10 @@ run the app:
 
     SET DEBUG=dlna-proxy:* & npm start
 
+reset npm cache:
+
+    npm cache clean --force
+
 ## Packaging
 
 https://www.electronjs.org/docs/v14-x-y/tutorial/quick-start#package-and-distribute-your-application
