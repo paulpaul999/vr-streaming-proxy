@@ -6,7 +6,7 @@
   "license": "UNLICENSED",
   "private": true,
   "type": "module",
-  "main": "bin/www.cjs",
+  "main": "bin/entrypoint.cjs",
   "scripts": {
     "start": "electron ."
   },
