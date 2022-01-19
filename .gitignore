@@ -2,7 +2,7 @@
 /doc/unpub/
 
 # Configdata
-/appstor.json
+*.appstor.json
 
 # Logs
 logs
