@@ -40,6 +40,7 @@ app.use('/proxy', proxy_router)
 
 /* ----------------- Electron ------------------ */
 
+/*
 import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
 
@@ -50,6 +51,7 @@ win.loadURL('https://github.com')
 
 const contents = win.webContents
 // console.log(contents)
+*/
 
 /* --------------------------------------------- */
 

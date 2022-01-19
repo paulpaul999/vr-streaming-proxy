@@ -13,9 +13,9 @@ router.get('/url/*', function(req, res, next) {
   proxify.proxify_request(req, res, dest_url);
 });
 
-router.get('/stream/:provider_id/:stream_id', function(req, res, next) {
+router.get('/stream/:provider_id/:stream_id', async function(req, res, next) {
   const provider = provider_manager.provider(req.params.provider_id);
-  const dest_url = provider.get_stream_url(req.params.stream_id);
+  const dest_url = await provider.get_stream_url(req.params.stream_id);
   console.log('dest_url',dest_url);
   proxify.proxify_request(req, res, dest_url);
 });

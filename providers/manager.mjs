@@ -16,14 +16,14 @@ const Manager = function () {
         return _registry[provider_id];
     }
 
-    self.handle_directory_request = function(spec) {
+    self.handle_directory_request = async function(spec) {
         const { dlna_path } = spec;
         if (dlna_path !== '0') {
             const parsed = dlna_path.split('/');
             const provider_id = parsed[0];
 
             const handler = self.provider(provider_id);
-            const listing = handler.handle_directory_request(spec);
+            const listing = await handler.handle_directory_request(spec);
             return { listing, provider_id };
         }
 

@@ -82,7 +82,7 @@ const dlna_generate_directory_xml = function (spec) {
 };
 
 /* GET users listing. */
-router.all('/control.xml', function (req, res, next) {
+router.all('/control.xml', async function (req, res, next) {
     //console.log("!!! control.xml !!!", req.rawHeaders, "\nBODY:", req.body);
 
     /** TODO: probably more cleaner way for getting server's ip https://stackoverflow.com/a/38426473
@@ -105,7 +105,7 @@ router.all('/control.xml', function (req, res, next) {
 
     // console.log({object_id, starting_index, requested_count});
 
-    const { listing, provider_id } = provider_manager.handle_directory_request({ dlna_path, starting_index, requested_count });
+    const { listing, provider_id } = await provider_manager.handle_directory_request({ dlna_path, starting_index, requested_count });
 
     const xml_array = listing.map(element => {
         let xml_generator = dlna_generate_directory_xml;
