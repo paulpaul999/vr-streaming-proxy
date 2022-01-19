@@ -1,4 +1,4 @@
-//import got from 'got';
+import got from 'got';
 import {simple_get} from '../utils/simple-http.mjs';
 
 /** Free Videos: https://www.czechvr.com/free-full-vr-porn-videos-download */
@@ -8,14 +8,14 @@ const CzechVR = function () {
     const DISPLAYNAME = 'CzechVR (Trailers)'
     const self = {};
 
-    let db = [
-
-    ];
+    let db = [];
 
     self._load = async function () {
-        const buffer = await simple_get(new URL("https://www.czechvrnetwork.com/members/deovr"));
-        const json = JSON.parse(buffer);
-        const data = json;
+        // const buffer = await simple_get(new URL("https://www.czechvrnetwork.com/members/deovr"));
+        // const json = JSON.parse(buffer);
+        // const data = json;
+        
+        const data = await got("https://www.czechvrnetwork.com/members/deovr").json();
         db = data.scenes[0].list;
     };
     self._load();
