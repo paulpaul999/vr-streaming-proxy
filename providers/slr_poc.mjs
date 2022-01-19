@@ -113,6 +113,7 @@ const SLR_PoC = function () {
                 const entry = {
                     type: 'vid',
                     dlna_id: `${i},${resolution}`,
+                    stream_url: scene.video_urls[resolution],
                     displayname: `${scene.title}_180_180x180_3dh_LR.mp4`,
                     thumbnail_url: scene.thumbnail,
                     thumbnail_mimetype: 'image/jpeg',

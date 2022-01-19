@@ -32,7 +32,10 @@ const dlna_generate_video_xml = function (spec) {
     const { element, parent_id, local_url_generator, provider_id } = spec;
 
     const video_id = element.dlna_id;
-    const video_url = local_url_generator(`/proxy/stream/${provider_id}/${video_id}`);
+    let video_url = local_url_generator(`/proxy/stream/${provider_id}/${video_id}`);
+    if (element.stream_url) {
+        video_url = local_url_generator(`/proxy/url/${element.stream_url}`);
+    }
     const dlna_item_id = `${parent_id}/${video_id}`;
     const thumbnail_url = local_url_generator(`/proxy/url/${element.thumbnail_url}`);
     const thumbnail_mimetype = element.thumbnail_mimetype || 'image/jpeg';
