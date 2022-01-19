@@ -6,8 +6,10 @@
 ## ESM vs CommonJS
 - https://github.com/sindresorhus/got/issues/1789
 - https://stackoverflow.com/a/62749284
-- Electron: https://github.com/electron/electron/issues/21457
-
+- Electron:
+    - https://github.com/electron/electron/issues/21457
+    - https://stackoverflow.com/a/70658025
+    
 ## Scrapers
 
 - Stash: https://github.com/stashapp/CommunityScrapers
