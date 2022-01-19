@@ -38,4 +38,19 @@ app.use('/', indexRouter);
 app.use('/ContentDirectory', bodyParser.xml(), cd_router);
 app.use('/proxy', proxy_router)
 
+/* --------------------------------------------- */
+
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
+
+const { BrowserWindow } = require('electron');
+
+const win = new BrowserWindow({ width: 800, height: 1500 })
+win.loadURL('https://github.com')
+
+const contents = win.webContents
+console.log(contents)
+
+
+
 export default app;

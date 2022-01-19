@@ -9,6 +9,8 @@
 - Electron:
     - https://github.com/electron/electron/issues/21457
     - https://stackoverflow.com/a/70658025
+    - https://stackoverflow.com/a/63792017
+    - https://nodejs.org/api/esm.html#esm_differences_between_es_modules_and_commonjs
     
 ## Scrapers
 
