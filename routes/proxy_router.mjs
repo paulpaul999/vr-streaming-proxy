@@ -9,7 +9,8 @@ import proxify from '../utils/proxify.mjs';
 
 router.get('/url/*', function(req, res, next) {
   const BASE_PATH = "/proxy/url/";
-  const dest_url = req.originalUrl.slice(BASE_PATH.length);
+  const dest_url_encoded = req.originalUrl.slice(BASE_PATH.length);
+  const dest_url = decodeURIComponent(dest_url_encoded);
   proxify.proxify_request(req, res, dest_url);
 });
 

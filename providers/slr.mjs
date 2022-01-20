@@ -168,7 +168,7 @@ const SLR = function () {
             const studio_id = parseInt(studio_id_str);
             const studios = await studios_promise;
             let scenes = await studios[studio_id].scenes_promise;
-            scenes = scenes.slice(starting_index, starting_index+requested_count);
+            //scenes = scenes.slice(starting_index, starting_index+requested_count);
 
             const dir = [];
 
@@ -200,11 +200,12 @@ const SLR = function () {
     };
 
     self.get_stream_url = async function (video_id) {
-        const parsed = video_id.split(',');
-        const db_idx = parsed[0];
-        const resolution = parsed[1];
-        const scene = db[db_idx];
-        const video_url = scene.video_urls[resolution];
+        // const parsed = video_id.split(',');
+        // const db_idx = parsed[0];
+        // const resolution = parsed[1];
+        // const scene = db[db_idx];
+        // const video_url = scene.video_urls[resolution];
+        let video_url = "https://cdn-vr.sexlikereal.com/full_videos_app/h265/22136_3840p.mp4?Expires=1642655832&Signature=sZIz%2BG7unZMuqPQ9YzERiMONx38%3D&AWSAccessKeyId=F8ADCFF63A8AB7F3EC6BF4B85366A1B3";
         return video_url;
     };
 
