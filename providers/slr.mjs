@@ -127,6 +127,7 @@ const SLR = function () {
     self.handle_directory_request = async function (spec) {
         const { dlna_path, starting_index, requested_count } = spec;
         const parsed_path = dlna_path.split('/').slice(1);
+        console.log("SLR","handle_directory_request",dlna_path);
 
         const is_provider_root = parsed_path.length === 0;
         const is_studio_overview = parsed_path.length === 1;
@@ -168,19 +169,23 @@ const SLR = function () {
             const studios = await studios_promise;
             let scenes = await studios[studio_id].scenes_promise;
             scenes = scenes.slice(starting_index, starting_index+requested_count);
-            
+
             const dir = [];
 
             for (let i = 0; i < scenes.length; i++) {
                 const scene = scenes[i];
 
-                const actors_str = scene.actors.map(actor => actor.name).join(", ");
+                let displaytitle = scene.title;
+                if (scene.actors) {
+                    displaytitle = scene.actors.map(actor => actor.name).join(", ");
+                }
+                console.log("studio_id",studio_id, "scene.id", scene.id); /* , "scene.name", scene.title); */
 
                 const entry = {
                     type: 'vid',
                     dlna_id: `${i},${resolution}`,
                     stream_url: _slr_select_stream_url(scene),
-                    displayname: `${actors_str}_180_180x180_3dh_LR.mp4`,
+                    displayname: `${displaytitle}_180_180x180_3dh_LR.mp4`,
                     thumbnail_url: scene.thumbnailUrl,
                     thumbnail_mimetype: 'image/jpeg',
                 };
