@@ -56,7 +56,7 @@ const SLR = function () {
     const PROVIDER_ID = 'slr';
     const DISPLAYNAME = 'SLR (Premium)'
     const STATEFILE = 'slr.appstor.json';
-    const MAX_REQ_SCENES_COUNT = 60;
+    const MAX_REQ_SCENES_COUNT = 250;
     
     const self = {};
 
