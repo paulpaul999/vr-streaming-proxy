@@ -126,7 +126,7 @@ router.all('/control.xml', async function (req, res, next) {
         ${ xml_array.join("\n") }
     </DIDL-Lite>`;
 
-    console.log("!!!!!!!!! ControlService:", results);
+    // console.log("!!!!!!!!! ControlService:", results);
 
     /* TODO: <TotalMatches> */
     const m = `<s:Envelope s:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" xmlns:s="http://schemas.xmlsoap.org/soap/envelope/">

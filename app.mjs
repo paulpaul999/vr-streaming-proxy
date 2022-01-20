@@ -20,6 +20,8 @@ import provider_czechvr_free from './providers/czechvr_free.mjs';
 provider_manager.register(provider_czechvr_free);
 import provider_slr_poc from './providers/slr_poc.mjs';
 provider_manager.register(provider_slr_poc);
+import provider_slr from './providers/slr.mjs'
+provider_manager.register(provider_slr);
 
 /* Express */
 var app = express();
