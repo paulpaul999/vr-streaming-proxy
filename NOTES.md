@@ -12,6 +12,10 @@
     - https://stackoverflow.com/a/63792017
     - https://nodejs.org/api/esm.html#esm_differences_between_es_modules_and_commonjs
 
+## Pipelines / Streams
+- https://nodejs.org/es/docs/guides/backpressuring-in-streams/
+- https://dev.to/morz/pipeline-api-the-best-way-to-handle-stream-errors-that-nobody-tells-you-about-122o
+
 ## Networking
 - Use of Agents: https://stackoverflow.com/a/64208818
 
