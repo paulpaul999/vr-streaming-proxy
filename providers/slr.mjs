@@ -80,6 +80,31 @@ const SLR = function () {
         298, // Swallowbay
         153, // VRFanService
         160, // RealHotVR
+        79, // StasyQVR
+        2, // VirtualRealPorn
+        24, // WankzVR
+        69, // MILFVR
+        110, // VRLatina
+        85, // perVRt
+        245, // VRedging
+        182, // VRsolos
+        154, // WankitnowVR
+        108, // StripzVR
+        123, // xVirtual
+        158, // VRIntimacy
+        26, // TmwVRNet
+        171, // iStripper
+        233, // LustReality
+        89, // VRSexperts
+        97, // VRPFilms
+        201, // OnlyTease
+        47, // StockingsVR
+        257, // No2StudioVR
+        247, // BaberoticaVR
+        193, // POVcentralVR
+        183, // Only3xVR
+        266, // Deepinsex
+        285, // Squeeze VR
     ];
 
     let studios_promise = new Promise(async function (resolve, reject) {
