@@ -75,7 +75,7 @@ const SLR = function () {
     
     const self = {};
 
-    const scenes = {};
+    const scenes_db = {}; /* TODO: user more efficient data structure */
 
     const __load_state = async function (statefile) {
         const buff = await readFile(statefile);
@@ -132,18 +132,19 @@ const SLR = function () {
             studio_idx[studio.id] = { meta: studio };
         });
 
-        selected_studios.forEach(async (id) => {
+        const selected_studios_promises = selected_studios.map(async (id) => {
             const auth = (await state).auth.sessionID;
             const studio_scenes_promise = SLR_API.get_scenes({ studio: id, results: MAX_REQ_SCENES_COUNT }, auth);
             const studio_scenes = await studio_scenes_promise;
             studio_scenes.forEach(scene => {
-                scenes[scene.id] = scene;
+                scenes_db[scene.id] = scene;
             });
 
             // make studio results visible in idx
             studio_idx[id].scenes_promise = studio_scenes_promise;
         });
 
+        await Promise.all(selected_studios_promises);
         resolve(studio_idx);
     });
 
@@ -196,16 +197,24 @@ const SLR = function () {
     };
 
     self._list_videos = async function (spec) {
-        const {resolution, studio_id_str, starting_index, requested_count} = spec;
+        const {studio_id_str} = spec;
         const studio_id = parseInt(studio_id_str);
         const studios = await studios_promise;
-        let scenes = await studios[studio_id].scenes_promise;
-        scenes = scenes.slice(starting_index, starting_index+requested_count);
+        const scenes = await studios[studio_id].scenes_promise;
+        
+        const scene_ids = scenes.map(scene => scene.id);
+        return self._list_videos_by_scene_ids({...spec, scene_ids});
+    };
+
+    self._list_videos_by_scene_ids = async function (spec) {
+        const {resolution, starting_index, requested_count} = spec;
+        let {scene_ids} = spec;
+        scene_ids = scene_ids.slice(starting_index, starting_index+requested_count);
 
         const dir = [];
 
-        for (let i = 0; i < scenes.length; i++) {
-            const scene = scenes[i];
+        scene_ids.forEach(scene_id => {
+            const scene = scenes_db[scene_id];
 
             let displaytitle = scene.title;
             if (scene.actors) {
@@ -213,11 +222,11 @@ const SLR = function () {
             }
             displaytitle = `${displaytitle}_${scene.id}`;
 
-            console.log("studio_id",studio_id, "scene.id", scene.id); /* , "scene.name", scene.title); */
+            console.log("scene.id", scene.id); /* , "scene.name", scene.title); */
 
             const entry = {
                 type: 'vid',
-                dlna_id: `${i},${resolution}`,
+                dlna_id: `${scene.id},${resolution}`,
                 stream_url: _slr_select_stream_url(scene),
                 displayname: `${displaytitle}_180_180x180_3dh_LR.mp4`,
                 thumbnail_url: scene.thumbnailUrl,
@@ -225,7 +234,7 @@ const SLR = function () {
             };
 
             dir.push(entry);
-        }
+        });
 
         return dir;
     };
@@ -261,10 +270,10 @@ const SLR = function () {
         const browse_type = route;
         if (subroute === '') {
             if (browse_type === 'all_studios') {
-                return await self._list_videos_all_studios();
-            } else {
-                return await self._list_studios();
+                return await self._list_videos_all_studios({...spec});
             }
+            return await self._list_studios();
+
         }
 
         [route, subroute] = split_path(subroute);
