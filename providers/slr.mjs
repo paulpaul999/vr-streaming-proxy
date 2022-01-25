@@ -69,6 +69,7 @@ const SLR = function () {
     const state = __load_state(STATEFILE);
 
     const selected_studios = [
+        224, // SLR Originals
         53, // RealJamVR
         21, // VRBangers
         51, // SexBabesVR
