@@ -1,6 +1,21 @@
 import { readFile } from 'fs/promises';
 import got from 'got';
 
+const split_path = function (input_path) {
+    const split_char = '/';
+
+    let root = input_path;
+    let subpath = '';
+
+    const pos = input_path.indexOf(split_char);
+    const found_char = pos >= 0;
+    if (found_char) {
+        root = input_path.slice(0, pos);
+        subpath = input_path.slice(pos+1);
+    }
+    return [root, subpath];
+}
+
 const _slr_select_stream_url = function (scene) {
     const encoding = scene.encodings.reduce((previous, current) => {
         if (current.name === 'h265') {
@@ -56,9 +71,11 @@ const SLR = function () {
     const PROVIDER_ID = 'slr';
     const DISPLAYNAME = 'SLR (Premium)'
     const STATEFILE = 'slr.appstor.json';
-    const MAX_REQ_SCENES_COUNT = 250;
+    const MAX_REQ_SCENES_COUNT = 60;
     
     const self = {};
+
+    const scenes = {};
 
     const __load_state = async function (statefile) {
         const buff = await readFile(statefile);
@@ -117,32 +134,105 @@ const SLR = function () {
 
         selected_studios.forEach(async (id) => {
             const auth = (await state).auth.sessionID;
-            studio_idx[id].scenes_promise = SLR_API.get_scenes({ studio: id, results: MAX_REQ_SCENES_COUNT }, auth);
+            const studio_scenes_promise = SLR_API.get_scenes({ studio: id, results: MAX_REQ_SCENES_COUNT }, auth);
+            const studio_scenes = await studio_scenes_promise;
+            studio_scenes.forEach(scene => {
+                scenes[scene.id] = scene;
+            });
+
+            // make studio results visible in idx
+            studio_idx[id].scenes_promise = studio_scenes_promise;
         });
 
         resolve(studio_idx);
     });
-    
 
-
-    // studios.then(studios => console.log(studios.slice(0,5)));
-    SLR_API.get_scenes({ model:61 });
-
-
-    let db = [
-        {
-            title: "[5k+] Melody Marks (SLRO)",
-            thumbnail: "https://cdn-vr.sexlikereal.com/images/16390/98729_app.jpg",
-            video_urls: {
-                'max': "https://cdn-vr.sexlikereal.com/videos_app/h265/16390_2700p.mp4",
-                '4k': "https://cdn-vr.sexlikereal.com/videos_app/h265/16390_1920p.mp4",
-            }
-        },
-        //...
-    ];
 
     self.get_provider_id = function () { return PROVIDER_ID; };
     self.get_displayname = function () { return DISPLAYNAME; };
+
+    self._list_resolution = function (route) {
+        return [
+            {
+                type: 'dir',
+                dlna_id: 'max', /* => dir_path+'/misc' */
+                displayname: 'Prefer 5k+',
+            },
+            {
+                type: 'dir',
+                dlna_id: '4k',
+                displayname: 'Prefer 4k',
+            },
+        ];
+    };
+
+    self._list_browse_types = async function (spec) {
+        return [
+            {
+                type: 'dir',
+                dlna_id: 'all_studios', /* => dir_path+'/misc' */
+                displayname: 'All Studios',
+            },
+            {
+                type: 'dir',
+                dlna_id: 'list_studios',
+                displayname: 'Studios',
+            },
+        ];
+    };
+
+    self._list_studios = async function () {
+        const studios = await studios_promise;
+        //console.log(studios);
+
+        return selected_studios.map(studio_id => {
+            const studio = studios[studio_id];
+            return {
+                type: 'dir',
+                dlna_id: String(studio_id),
+                displayname: studio.meta.name,
+            }
+        });
+    };
+
+    self._list_videos = async function (spec) {
+        const {resolution, studio_id_str, starting_index, requested_count} = spec;
+        const studio_id = parseInt(studio_id_str);
+        const studios = await studios_promise;
+        let scenes = await studios[studio_id].scenes_promise;
+        scenes = scenes.slice(starting_index, starting_index+requested_count);
+
+        const dir = [];
+
+        for (let i = 0; i < scenes.length; i++) {
+            const scene = scenes[i];
+
+            let displaytitle = scene.title;
+            if (scene.actors) {
+                displaytitle = scene.actors.map(actor => actor.name).join(", ");
+            }
+            displaytitle = `${displaytitle}_${scene.id}`;
+
+            console.log("studio_id",studio_id, "scene.id", scene.id); /* , "scene.name", scene.title); */
+
+            const entry = {
+                type: 'vid',
+                dlna_id: `${i},${resolution}`,
+                stream_url: _slr_select_stream_url(scene),
+                displayname: `${displaytitle}_180_180x180_3dh_LR.mp4`,
+                thumbnail_url: scene.thumbnailUrl,
+                thumbnail_mimetype: 'image/jpeg',
+            };
+
+            dir.push(entry);
+        }
+
+        return dir;
+    };
+
+    self._list_videos_all_studios = async function (spec) {
+        return []; // TODO: generalize self._list_videos for reuse in this func
+    };
 
     /**
      * Handles directory requests.
@@ -152,74 +242,35 @@ const SLR = function () {
      */
     self.handle_directory_request = async function (spec) {
         const { dlna_path, starting_index, requested_count } = spec;
-        const parsed_path = dlna_path.split('/').slice(1);
         console.log("SLR","handle_directory_request",dlna_path);
+        let [route, subroute] = split_path(dlna_path);
+        const parsed_path = dlna_path.split('/').slice(1);
+        if (route !== self.get_provider_id()) { return [] }
 
-        const is_provider_root = parsed_path.length === 0;
-        const is_studio_overview = parsed_path.length === 1;
-        const is_scene_overview = parsed_path.length === 2;
-
-        if (is_provider_root) {
-            /* Resolution Choices */
-            return [
-                {
-                    type: 'dir',
-                    dlna_id: 'max', /* => dir_path+'/misc' */
-                    displayname: 'Prefer 5k+',
-                },
-                {
-                    type: 'dir',
-                    dlna_id: '4k',
-                    displayname: 'Prefer 4k',
-                },
-            ];
+        if (subroute === '') {
+            return await self._list_resolution();
         }
 
-        if (is_studio_overview) {
-            const studios = await studios_promise;
-            //console.log(studios);
-
-            return selected_studios.map(studio_id => {
-                const studio = studios[studio_id];
-                return {
-                    type: 'dir',
-                    dlna_id: String(studio_id),
-                    displayname: studio.meta.name,
-                }
-            });
+        [route, subroute] = split_path(subroute);
+        const resolution = route;
+        if (subroute === '') {
+            return await self._list_browse_types();
         }
 
-        if (is_scene_overview) {
-            const [resolution, studio_id_str] = parsed_path;
-            const studio_id = parseInt(studio_id_str);
-            const studios = await studios_promise;
-            let scenes = await studios[studio_id].scenes_promise;
-            //scenes = scenes.slice(starting_index, starting_index+requested_count);
-
-            const dir = [];
-
-            for (let i = 0; i < scenes.length; i++) {
-                const scene = scenes[i];
-
-                let displaytitle = scene.title;
-                if (scene.actors) {
-                    displaytitle = scene.actors.map(actor => actor.name).join(", ");
-                }
-                console.log("studio_id",studio_id, "scene.id", scene.id); /* , "scene.name", scene.title); */
-
-                const entry = {
-                    type: 'vid',
-                    dlna_id: `${i},${resolution}`,
-                    stream_url: _slr_select_stream_url(scene),
-                    displayname: `${displaytitle}_180_180x180_3dh_LR.mp4`,
-                    thumbnail_url: scene.thumbnailUrl,
-                    thumbnail_mimetype: 'image/jpeg',
-                };
-
-                dir.push(entry);
+        [route, subroute] = split_path(subroute);
+        const browse_type = route;
+        if (subroute === '') {
+            if (browse_type === 'all_studios') {
+                return await self._list_videos_all_studios();
+            } else {
+                return await self._list_studios();
             }
+        }
 
-            return dir;
+        [route, subroute] = split_path(subroute);
+        const studio_id_str = route;
+        if (subroute === '') {
+            return await self._list_videos({...spec, studio_id_str, resolution});
         }
 
         return [];
