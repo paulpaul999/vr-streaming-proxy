@@ -71,7 +71,7 @@ const SLR = function () {
     const PROVIDER_ID = 'slr';
     const DISPLAYNAME = 'SLR (Premium)'
     const STATEFILE = 'slr.appstor.json';
-    const MAX_REQ_SCENES_COUNT = 60;
+    const MAX_REQ_SCENES_COUNT = 250;
     
     const self = {};
 
@@ -135,7 +135,7 @@ const SLR = function () {
         const selected_studios_promises = selected_studios.map(async (id) => {
             const auth = (await state).auth.sessionID;
             const studio_scenes_promise = SLR_API.get_scenes({ studio: id, results: MAX_REQ_SCENES_COUNT }, auth);
-            const studio_scenes = await studio_scenes_promise;
+            const studio_scenes = await studio_scenes_promise; // TODO: await at the right place ? should be outside this promise
             studio_scenes.forEach(scene => {
                 scenes_db[scene.id] = scene;
             });
@@ -196,16 +196,6 @@ const SLR = function () {
         });
     };
 
-    self._list_videos = async function (spec) {
-        const {studio_id_str} = spec;
-        const studio_id = parseInt(studio_id_str);
-        const studios = await studios_promise;
-        const scenes = await studios[studio_id].scenes_promise;
-        
-        const scene_ids = scenes.map(scene => scene.id);
-        return self._list_videos_by_scene_ids({...spec, scene_ids});
-    };
-
     self._list_videos_by_scene_ids = async function (spec) {
         const {resolution, starting_index, requested_count} = spec;
         let {scene_ids} = spec;
@@ -239,8 +229,24 @@ const SLR = function () {
         return dir;
     };
 
+    self._list_videos = async function (spec) {
+        const {studio_id_str} = spec;
+        const studio_id = parseInt(studio_id_str);
+        const studios = await studios_promise;
+        const scenes = await studios[studio_id].scenes_promise;
+        
+        const scene_ids = scenes.map(scene => scene.id);
+        return self._list_videos_by_scene_ids({...spec, scene_ids});
+    };
+
     self._list_videos_all_studios = async function (spec) {
-        return []; // TODO: generalize self._list_videos for reuse in this func
+        const auth = (await state).auth.sessionID;
+        const scenes = await SLR_API.get_scenes({ results: MAX_REQ_SCENES_COUNT }, auth);
+        scenes.forEach(scene => { /* TODO: introduce auto-adding to db after server response */
+            scenes_db[scene.id] = scene;
+        });
+        const scene_ids = scenes.map(scene => scene.id);
+        return self._list_videos_by_scene_ids({...spec, scene_ids});
     };
 
     /**
