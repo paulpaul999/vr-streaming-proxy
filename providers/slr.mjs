@@ -123,6 +123,8 @@ const SLR = function () {
         183, // Only3xVR
         266, // Deepinsex
         285, // Squeeze VR
+        351, // DeviantsVR
+        342, // KinkyGirlsBerlin
     ];
 
     let studios_promise = new Promise(async function (resolve, reject) {
