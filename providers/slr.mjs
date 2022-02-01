@@ -243,7 +243,7 @@ const SLR = function () {
 
     self._list_videos_all_studios = async function (spec) {
         const auth = (await state).auth.sessionID;
-        const scenes = await SLR_API.get_scenes({ results: MAX_REQ_SCENES_COUNT }, auth);
+        const scenes = await SLR_API.get_scenes({ results: MAX_REQ_SCENES_COUNT, show_jav_scenes: false }, auth);
         scenes.forEach(scene => { /* TODO: introduce auto-adding to db after server response */
             scenes_db[scene.id] = scene;
         });
