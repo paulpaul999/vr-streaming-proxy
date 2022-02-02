@@ -54,16 +54,25 @@ SLR_API.get_studios = async function () {
 SLR_API.get_scenes = async function (query, auth) {
     console.log("SLR_API_getScenes", query);
     const headers = { "Content-Type": "application/x-www-form-urlencoded" };
-    if (auth !== undefined) {
-        headers.cookie = `sess=${auth}`;
-    }
-    const _query = Object.assign({ project:1, results:5000, page: 1 }, query);
-    console.log(new URLSearchParams(_query).toString());
+    if (auth !== undefined) { headers.cookie = `sess=${auth}`; }
+    const _query = { project: 1, results: 5000, page: 1, ...query };
     const json = await got_slr.post('https://api.sexlikereal.com/api_list/getScenes', {
         headers: headers,
         body: new URLSearchParams(_query).toString()
     }).json();
     console.log("SLR_API_getScenes", query, "RX")
+    return json.list;
+};
+
+SLR_API.get_models = async function (query, auth) {
+    const headers = { "Content-Type": "application/x-www-form-urlencoded" };
+    if (auth !== undefined) { headers.cookie = `sess=${auth}`; }
+    const _query = { project: 1, results: 10000, page: 1, ...query }; // TODO: Paginated requests
+    const json = await got_slr('https://api.sexlikereal.com/api_list/getModels', {
+        method: 'POST',
+        headers: headers,
+        body: new URLSearchParams(_query).toString()
+    }).json();
     return json.list;
 };
 
@@ -127,29 +136,7 @@ const SLR = function () {
         342, // KinkyGirlsBerlin
     ];
 
-    let studios_promise = new Promise(async function (resolve, reject) {
-        let studios = await SLR_API.get_studios();
-        const studio_idx = {}
-        studios.forEach(studio => {
-            studio_idx[studio.id] = { meta: studio };
-        });
-
-        const selected_studios_promises = selected_studios.map(async (id) => {
-            const auth = (await state).auth.sessionID;
-            const studio_scenes_promise = SLR_API.get_scenes({ studio: id, results: MAX_REQ_SCENES_COUNT }, auth);
-            const studio_scenes = await studio_scenes_promise; // TODO: await at the right place ? should be outside this promise
-            studio_scenes.forEach(scene => {
-                scenes_db[scene.id] = scene;
-            });
-
-            // make studio results visible in idx
-            studio_idx[id].scenes_promise = studio_scenes_promise;
-        });
-
-        await Promise.all(selected_studios_promises);
-        resolve(studio_idx);
-    });
-
+    let studios_promise =  SLR_API.get_studios();
 
     self.get_provider_id = function () { return PROVIDER_ID; };
     self.get_displayname = function () { return DISPLAYNAME; };
@@ -181,19 +168,23 @@ const SLR = function () {
                 dlna_id: 'list_studios',
                 displayname: 'Studios',
             },
+            {
+                type: 'dir',
+                dlna_id: 'fav_models',
+                displayname: 'Fav Models',
+            },
         ];
     };
 
     self._list_studios = async function () {
         const studios = await studios_promise;
-        //console.log(studios);
+        let selected_studios_ = studios.filter(studio => selected_studios.includes(studio.id));
 
-        return selected_studios.map(studio_id => {
-            const studio = studios[studio_id];
+        return selected_studios_.map(studio => {
             return {
                 type: 'dir',
-                dlna_id: String(studio_id),
-                displayname: studio.meta.name,
+                dlna_id: String(studio.id),
+                displayname: studio.name,
             }
         });
     };
@@ -231,24 +222,28 @@ const SLR = function () {
         return dir;
     };
 
-    self._list_videos = async function (spec) {
-        const {studio_id_str} = spec;
-        const studio_id = parseInt(studio_id_str);
-        const studios = await studios_promise;
-        const scenes = await studios[studio_id].scenes_promise;
-        
-        const scene_ids = scenes.map(scene => scene.id);
-        return self._list_videos_by_scene_ids({...spec, scene_ids});
-    };
-
-    self._list_videos_all_studios = async function (spec) {
+    self._list_videos_by_api_request = async function (spec, api_parameters) {
         const auth = (await state).auth.sessionID;
-        const scenes = await SLR_API.get_scenes({ results: MAX_REQ_SCENES_COUNT, show_jav_scenes: false }, auth);
+        const scenes = await SLR_API.get_scenes({ results: MAX_REQ_SCENES_COUNT, ...api_parameters }, auth);
         scenes.forEach(scene => { /* TODO: introduce auto-adding to db after server response */
             scenes_db[scene.id] = scene;
         });
         const scene_ids = scenes.map(scene => scene.id);
         return self._list_videos_by_scene_ids({...spec, scene_ids});
+    };
+
+    self._list_fav_models = async function (spec) {
+        const auth = (await state).auth.sessionID;
+        const all_models = await SLR_API.get_models({}, auth);
+        const fav_models = all_models.filter(model => model.isFavorite);
+        const dir_list = fav_models.map(model => {
+            return {
+                type: 'dir',
+                dlna_id: String(model.id),
+                displayname: model.name,
+            }
+        });
+        return dir_list;
     };
 
     /**
@@ -276,18 +271,33 @@ const SLR = function () {
 
         [route, subroute] = split_path(subroute);
         const browse_type = route;
-        if (subroute === '') {
-            if (browse_type === 'all_studios') {
-                return await self._list_videos_all_studios({...spec});
+        console.log("browse_type",browse_type);
+        if (browse_type === 'fav_models') {
+            if (subroute === '') {
+                return await self._list_fav_models({...spec});
             }
-            return await self._list_studios();
-
+            [route, subroute] = split_path(subroute);
+            const model_id = parseInt(route);
+            if (subroute === '') {
+                return await self._list_videos_by_api_request({ ...spec }, { model: model_id });
+            }
         }
+        if (browse_type === 'all_studios') {
+            if (subroute === '') {
+                return await self._list_videos_by_api_request({ ...spec }, { show_jav_scenes: false });
+            }
+        }
+        if (browse_type === 'list_studios') {
+            if (subroute === '') {
+                return await self._list_studios();
+            }
 
-        [route, subroute] = split_path(subroute);
-        const studio_id_str = route;
-        if (subroute === '') {
-            return await self._list_videos({...spec, studio_id_str, resolution});
+            [route, subroute] = split_path(subroute);
+            const studio_id_str = route;
+            const studio_id = parseInt(route);
+            if (subroute === '') {
+                return await self._list_videos_by_api_request({ ...spec }, { studio: studio_id, results: MAX_REQ_SCENES_COUNT });
+            }
         }
 
         return [];
