@@ -14,8 +14,8 @@ const traverse_route = function (table, route, req) {
     
     const [route_id, ...subroute] = route;
 
-    if (table.hasOwnProperty('keyname')) {
-        req.$vars[table.keyname] = route_id;
+    if (table.hasOwnProperty('varname')) {
+        req.$vars[table.varname] = route_id;
     }
 
     const end_of_route = route.length === 0;
@@ -191,41 +191,6 @@ const SLR = function () {
     self.get_provider_id = function () { return PROVIDER_ID; };
     self.get_displayname = function () { return DISPLAYNAME; };
 
-    self._list_resolution = function (route) {
-        return [
-            {
-                type: 'dir',
-                dlna_id: 'max', /* => dir_path+'/misc' */
-                displayname: 'Prefer 5k+',
-            },
-            {
-                type: 'dir',
-                dlna_id: '4k',
-                displayname: 'Prefer 4k',
-            },
-        ];
-    };
-
-    self._list_browse_types = async function (spec) {
-        return [
-            {
-                type: 'dir',
-                dlna_id: 'all_studios', /* => dir_path+'/misc' */
-                displayname: 'All Studios',
-            },
-            {
-                type: 'dir',
-                dlna_id: 'list_studios',
-                displayname: 'Studios',
-            },
-            {
-                type: 'dir',
-                dlna_id: 'fav_models',
-                displayname: 'Fav Models',
-            },
-        ];
-    };
-
     self._list_studios = async function () {
         const studios = await studios_promise;
         let selected_studios_ = studios.filter(studio => selected_studios.includes(studio.id));
@@ -297,12 +262,12 @@ const SLR = function () {
     };
 
     const ROUTING_TABLE = {
-        keyname: 'resolution',
+        varname: 'resolution',
         list: { max: 'Prefer 5k+', mid: 'Prefer 4k' },
         stop_routing: false,
         subroutes: {
             $default: {
-                keyname: undefined, /* if keyname is undefined dlna_id is not stored */
+                varname: undefined, /* if varname is undefined dlna_id is not stored */
                 list: {
                     all_scenes: 'All Scenes',
                     studios: 'Studios',
@@ -313,7 +278,7 @@ const SLR = function () {
                         list: req => self._list_videos_by_api_request({ ...req }, { show_jav_scenes: false })
                     },
                     studios: {
-                        keyname: 'studio_id',
+                        varname: 'studio_id',
                         list: req => self._list_studios(),
                         subroutes: {
                             $default: {
@@ -322,7 +287,7 @@ const SLR = function () {
                         }
                     },
                     fav_models: {
-                        keyname: 'model_id',
+                        varname: 'model_id',
                         list: req => self._list_fav_models({ ...req }),
                         subroutes: {
                             $default: {
