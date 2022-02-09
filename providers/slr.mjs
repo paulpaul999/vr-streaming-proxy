@@ -296,6 +296,45 @@ const SLR = function () {
         return dir_list;
     };
 
+    const ROUTING_TABLE = {
+        keyname: 'resolution',
+        list: { max: 'Prefer 5k+', mid: 'Prefer 4k' },
+        stop_routing: false,
+        subroutes: {
+            $default: {
+                keyname: undefined, /* if keyname is undefined dlna_id is not stored */
+                list: {
+                    all_scenes: 'All Scenes',
+                    studios: 'Studios',
+                    fav_models: 'Favourite Models'
+                },
+                subroutes: {
+                    all_scenes: {
+                        list: req => self._list_videos_by_api_request({ ...req }, { show_jav_scenes: false })
+                    },
+                    studios: {
+                        keyname: 'studio_id',
+                        list: req => self._list_studios(),
+                        subroutes: {
+                            $default: {
+                                list: req => self._list_videos_by_api_request({ ...req }, { studio: req.$vars.studio_id, results: MAX_REQ_SCENES_COUNT })
+                            }
+                        }
+                    },
+                    fav_models: {
+                        keyname: 'model_id',
+                        list: req => self._list_fav_models({ ...req }),
+                        subroutes: {
+                            $default: {
+                                list: req => self._list_videos_by_api_request({ ...req }, { model: req.$vars.model_id })
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    };
+
     /**
      * Handles directory requests.
      * 
@@ -306,47 +345,8 @@ const SLR = function () {
         const { dlna_path, starting_index, requested_count } = req;
         console.log("SLR","handle_directory_request",dlna_path);
 
-        const routes = {
-            keyname: 'resolution',
-            list: { max: '5k+', mid: '4k' },
-            stop_routing: false,
-            subroutes: {
-                $default: {
-                    keyname: undefined, /* if keyname is undefined dlna_id is not stored */
-                    list: {
-                        all_scenes: 'All Scenes',
-                        studios: 'Studios',
-                        fav_models: 'Favourite Models'
-                    },
-                    subroutes: {
-                        all_scenes: {
-                            list: req => self._list_videos_by_api_request({ ...req }, { show_jav_scenes: false })
-                        },
-                        studios: {
-                            keyname: 'studio_id',
-                            list: req => self._list_studios(),
-                            subroutes: {
-                                $default: {
-                                    list: req => self._list_videos_by_api_request({ ...req }, { studio: req.$vars.studio_id, results: MAX_REQ_SCENES_COUNT })
-                                }
-                            }
-                        },
-                        fav_models: {
-                            keyname: 'model_id',
-                            list: req => self._list_fav_models({ ...req }),
-                            subroutes: {
-                                $default: {
-                                    list: req => self._list_videos_by_api_request({ ...req }, { model: req.$vars.model_id })
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        };
-
         const parsed_route = dlna_path.split('/').slice(1);
-        return traverse_route(routes, parsed_route, {...req});
+        return traverse_route(ROUTING_TABLE, parsed_route, {...req});
     };
 
     self.get_stream_url = async function (video_id) {
