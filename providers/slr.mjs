@@ -1,6 +1,56 @@
 import { readFile } from 'fs/promises';
 import got from 'got';
 
+/**
+ * Traverse a route along a table to find the right handlers.
+ * 
+ * @param {object} table that is traversed 
+ * @param {string[]} route as an array of strings
+ * @param {object} req object that is passed to the handler along with 'vars' key containing the variables defined during route traversal
+ */
+const traverse_route = function (table, route, req) {
+    if (!req) { req = {}; }
+    if (!req.$vars) { req.$vars = {}; } 
+    
+    const [route_id, ...subroute] = route;
+
+    if (table.hasOwnProperty('keyname')) {
+        req.$vars[table.keyname] = route_id;
+    }
+
+    const end_of_route = route.length === 0;
+    const show_list = end_of_route || Boolean(table.stop_routing);
+    if (show_list) {
+        const { list } = table;
+        if (typeof (list) === 'function') {
+            req.$subroute = subroute;
+            return list(req);
+        }
+
+        /* list is a static object */
+        const dir_listing = Object.entries(list).map(entry => {
+            const [key, value] = entry;
+            return { type: 'dir', dlna_id: key, displayname: value };
+        });
+        return dir_listing;
+    }
+    
+    /* match route */
+    const { subroutes } = table;
+    let subtable = subroutes?.$default;
+
+    if (subroutes?.hasOwnProperty(route_id)) {
+        subtable = subroutes[route_id];
+    }
+    
+    if (subtable) {
+        return traverse_route(subtable, subroute, req);
+    }
+
+    /* no matching route found */
+    return [];
+};
+
 const split_path = function (input_path) {
     const split_char = '/';
 
@@ -252,55 +302,51 @@ const SLR = function () {
      * @param {*} spec - contains: dlna_path, starting_index, requested_count
      * @returns 
      */
-    self.handle_directory_request = async function (spec) {
-        const { dlna_path, starting_index, requested_count } = spec;
+    self.handle_directory_request = async function (req) {
+        const { dlna_path, starting_index, requested_count } = req;
         console.log("SLR","handle_directory_request",dlna_path);
-        let [route, subroute] = split_path(dlna_path);
-        const parsed_path = dlna_path.split('/').slice(1);
-        if (route !== self.get_provider_id()) { return [] }
 
-        if (subroute === '') {
-            return await self._list_resolution();
-        }
+        const routes = {
+            keyname: 'resolution',
+            list: { max: '5k+', mid: '4k' },
+            stop_routing: false,
+            subroutes: {
+                $default: {
+                    keyname: undefined, /* if keyname is undefined dlna_id is not stored */
+                    list: {
+                        all_scenes: 'All Scenes',
+                        studios: 'Studios',
+                        fav_models: 'Favourite Models'
+                    },
+                    subroutes: {
+                        all_scenes: {
+                            list: req => self._list_videos_by_api_request({ ...req }, { show_jav_scenes: false })
+                        },
+                        studios: {
+                            keyname: 'studio_id',
+                            list: req => self._list_studios(),
+                            subroutes: {
+                                $default: {
+                                    list: req => self._list_videos_by_api_request({ ...req }, { studio: req.$vars.studio_id, results: MAX_REQ_SCENES_COUNT })
+                                }
+                            }
+                        },
+                        fav_models: {
+                            keyname: 'model_id',
+                            list: req => self._list_fav_models({ ...req }),
+                            subroutes: {
+                                $default: {
+                                    list: req => self._list_videos_by_api_request({ ...req }, { model: req.$vars.model_id })
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        };
 
-        [route, subroute] = split_path(subroute);
-        const resolution = route;
-        if (subroute === '') {
-            return await self._list_browse_types();
-        }
-
-        [route, subroute] = split_path(subroute);
-        const browse_type = route;
-        console.log("browse_type",browse_type);
-        if (browse_type === 'fav_models') {
-            if (subroute === '') {
-                return await self._list_fav_models({...spec});
-            }
-            [route, subroute] = split_path(subroute);
-            const model_id = parseInt(route);
-            if (subroute === '') {
-                return await self._list_videos_by_api_request({ ...spec }, { model: model_id });
-            }
-        }
-        if (browse_type === 'all_studios') {
-            if (subroute === '') {
-                return await self._list_videos_by_api_request({ ...spec }, { show_jav_scenes: false });
-            }
-        }
-        if (browse_type === 'list_studios') {
-            if (subroute === '') {
-                return await self._list_studios();
-            }
-
-            [route, subroute] = split_path(subroute);
-            const studio_id_str = route;
-            const studio_id = parseInt(route);
-            if (subroute === '') {
-                return await self._list_videos_by_api_request({ ...spec }, { studio: studio_id, results: MAX_REQ_SCENES_COUNT });
-            }
-        }
-
-        return [];
+        const parsed_route = dlna_path.split('/').slice(1);
+        return traverse_route(routes, parsed_route, {...req});
     };
 
     self.get_stream_url = async function (video_id) {
@@ -309,7 +355,7 @@ const SLR = function () {
         // const resolution = parsed[1];
         // const scene = db[db_idx];
         // const video_url = scene.video_urls[resolution];
-        let video_url = "https://cdn-vr.sexlikereal.com/full_videos_app/h265/22136_3840p.mp4?Expires=1642655832&Signature=sZIz%2BG7unZMuqPQ9YzERiMONx38%3D&AWSAccessKeyId=F8ADCFF63A8AB7F3EC6BF4B85366A1B3";
+        let video_url = "https://cdn-vr.sexlikereal.com/videos_app/h265/16390_2700p.mp4";
         return video_url;
     };
 
