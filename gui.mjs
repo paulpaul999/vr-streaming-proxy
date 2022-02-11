@@ -23,8 +23,9 @@ const GUI = function () {
 
         win.loadFile(path.join(__dirname, 'public', 'electron', 'index.html'));
 
-        ipcMain.on('provider:set-cookies', (event, provider_id) => {
+        ipcMain.handle('provider:set-cookies', (event, provider_id) => {
             console.log('provider:set-cookies', provider_id);
+            return {hallo: "welt", eins: 54321};
         });
 
         ipcMain.handle('gui:state', () => {
