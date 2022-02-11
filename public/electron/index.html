@@ -1,20 +1,47 @@
 <!DOCTYPE html>
-<html>
+<html data-theme="dark">
 
 <head>
     <meta charset="UTF-8">
     <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
     <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'">
+    <link rel="stylesheet" href="pico.min.css">
     <link rel="stylesheet" href="style.css">
-    <title>Hello World!</title>
+    <title>DLNA Proxy</title>
 </head>
 
 <body>
-    <h1>Hello World!</h1>
-    We are using Node.js <span id="node-version"></span>,
-    Chromium <span id="chrome-version"></span>,
-    and Electron <span id="electron-version"></span>.
+    <header class="container">
+        <nav>
+            <ul>
+                <li><img src="../icon/icon.svg" width="75" height="75" class="logo" /></li>
+                <li><strong>DLNA Proxy</strong></li>
+            </ul>
+        </nav>
+    </header>
+    <main class="container">
+        <section id="providers">
+            <!-- <h2>Providers</h2> -->
+            <article>
+                <header>
+                    <nav>
+                        <ul><li><strong>SLR</strong></li></ul>
+                        <ul>
+                            <li><a class="secondary" href="#">Login</a></li>
+                            <li><a class="secondary" href="#">Set Cookie</a></li>
+                        </ul>
+                    </nav>
+                </header>
+                <div>
+                    Status: Logged in
+                </div>
+            </article>
+        </section>
+    </main>
+    <footer class="container">
+        <small>Visit Project on GitHub: github.com/paulpaul999/dlna-proxy</small>
+    </footer>
 </body>
 
 </html>
