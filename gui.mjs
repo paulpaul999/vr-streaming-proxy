@@ -26,6 +26,10 @@ const GUI = function () {
         ipcMain.on('provider:set-cookies', (event, provider_id) => {
             console.log('provider:set-cookies', provider_id);
         });
+
+        ipcMain.handle('gui:state', () => {
+            return {hallo: "welt", eins: 12345};
+        });
     };
 
     app.whenReady().then(() => {
