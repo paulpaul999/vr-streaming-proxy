@@ -1,6 +1,5 @@
-const { contextBridge, ipcRenderer } = require('electron');
+const { contextBridge, ipcRenderer } = require('electron')
 
-contextBridge.exposeInMainWorld('darkMode', {
-    toggle: () => ipcRenderer.invoke('dark-mode:toggle'),
-    system: () => ipcRenderer.invoke('dark-mode:system')
-});
+contextBridge.exposeInMainWorld('electron_api', {
+    provider_set_cookies: (provider_id) => ipcRenderer.send('provider:set-cookies', provider_id)
+})

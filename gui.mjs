@@ -14,7 +14,7 @@ const GUI = function () {
 
     const createWindow = function () {
         const win = new BrowserWindow({
-            width: 800,
+            width: 400,
             height: 600,
             webPreferences: {
                 preload: path.join(__dirname, 'public', 'electron', 'preload.cjs')
@@ -23,17 +23,8 @@ const GUI = function () {
 
         win.loadFile(path.join(__dirname, 'public', 'electron', 'index.html'));
 
-        ipcMain.handle('dark-mode:toggle', () => {
-            if (nativeTheme.shouldUseDarkColors) {
-                nativeTheme.themeSource = 'light'
-            } else {
-                nativeTheme.themeSource = 'dark'
-            }
-            return nativeTheme.shouldUseDarkColors
-        });
-
-        ipcMain.handle('dark-mode:system', () => {
-            nativeTheme.themeSource = 'system'
+        ipcMain.on('provider:set-cookies', (event, provider_id) => {
+            console.log('provider:set-cookies', provider_id);
         });
     };
 
