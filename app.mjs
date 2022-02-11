@@ -40,22 +40,17 @@ app.use('/', indexRouter);
 app.use('/ContentDirectory', bodyParser.xml(), cd_router);
 app.use('/proxy', proxy_router)
 
-/* ----------------- Electron ------------------ */
-
-/*
-import { createRequire } from 'module';
-const require = createRequire(import.meta.url);
-
-const { BrowserWindow } = require('electron');
-
-const win = new BrowserWindow({ width: 800, height: 1500 })
-win.loadURL('https://github.com')
-
-const contents = win.webContents
-// console.log(contents)
-*/
 
 /* --------------------------------------------- */
 
+import GUI from './gui.mjs';
+// const HIDE_GUI = process.env.PROXY_HIDE_GUI;
+// console.log("ENV PROXY_SHOW_GUI:", HIDE_GUI, `<type: ${typeof HIDE_GUI}>`);
+const IS_ELECTRON = typeof process !== 'undefined' && typeof process.versions === 'object' && Boolean(process.versions.electron);
+if (IS_ELECTRON) {
+    const gui = GUI();
+}
+
+/* --------------------------------------------- */
 
 export default app;
