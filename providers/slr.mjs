@@ -210,7 +210,7 @@ const SLR = function () {
             json = JSON.parse(cookies);
         } catch (error) {
             if (error instanceof SyntaxError) {
-                return { logged_in: false, msg: 'Invalid cookie format' };
+                return { logged_in: false, msg: ['Invalid cookie format'] };
             }
         }
 
@@ -221,21 +221,33 @@ const SLR = function () {
             return previous;
         }, undefined);
         
-        if (!sess) { return { logged_in: false, msg: 'No "sess" Cookie found.' }; }
+        if (!sess) { return { logged_in: false, msg: ['No "sess" Cookie found.'] }; }
 
         const auth = (await state).auth;
         auth.sessionID = sess;
-        return self.is_logged_in();
-    };
 
-    self.is_logged_in = async function () {
-        const auth = (await state).auth.sessionID;
-        const is_logged_in = await SLR_API.get_checkuserpayment(auth);
-        let result = { logged_in: false, msg: `Cookie: ${auth}` }
+        const is_logged_in = await self._is_logged_in();
+        let result = { logged_in: false, msg: ['FAIL: Cookie invalid or stale.', `Cookie: ${sess}`] };
         if (is_logged_in) {
             result.logged_in = true;
+            result.msg = ['Success! Cookie is valid.', `Cookie: ${sess}`];
         }
         return result;
+    };
+
+    self._is_logged_in = async function () {
+        const auth = (await state).auth.sessionID;
+        return await SLR_API.get_checkuserpayment(auth);
+    };
+
+    self.get_status = async function () {
+        const auth = (await state).auth.sessionID;
+        const is_logged_in = await self._is_logged_in();
+
+        return {
+            Status: is_logged_in ? 'Logged in' : 'Logged out',
+            Cookie: auth
+        }
     };
 
     self._list_studios = async function () {

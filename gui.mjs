@@ -31,8 +31,15 @@ const GUI = function (spec) {
             return await provider_manager.provider(provider_id).set_cookies(clipboard_text);
         });
 
-        ipcMain.handle('gui:state', () => {
-            return {hallo: "welt", eins: 12345};
+        ipcMain.handle('gui:state', async function () {
+            const state = {
+                providers: {
+                    slr: {
+                        status: await provider_manager.provider('slr').get_status()
+                    }
+                }
+            }
+            return state;
         });
     };
 
