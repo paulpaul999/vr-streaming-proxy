@@ -5,6 +5,13 @@
   "version": "1.0.0",
   "license": "UNLICENSED",
   "private": true,
+  "build": {
+    "appId": "org.paulpaul999.vrsp",
+    "productName": "VR Streaming Proxy",
+    "mac": {
+      "category": "public.app-category.entertainment"
+    }
+  },
   "type": "module",
   "main": "bin/entrypoint.cjs",
   "scripts": {

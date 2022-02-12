@@ -62,5 +62,7 @@ Packaging with electron-builder
 yarn add electron-builder --dev
 ```
 
+GitHub action: https://github.com/samuelmeuli/action-electron-builder
+
 ## Misc
 - Rest syntax: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax#spread_in_object_literals
