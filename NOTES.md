@@ -60,6 +60,7 @@ Packaging with electron-builder
 
 ```
 yarn add electron-builder --dev
+yarn app:dist
 ```
 
 GitHub action: https://github.com/samuelmeuli/action-electron-builder

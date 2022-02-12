@@ -1,6 +1,9 @@
 # Testdata
 /doc/unpub/
 
+# electron-builder
+/dist/
+
 # Configdata
 *.appstor.json
 

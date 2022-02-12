@@ -15,7 +15,9 @@
   "type": "module",
   "main": "bin/entrypoint.cjs",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "postinstall": "electron-builder install-app-deps",
+    "app:dist": "electron-builder"
   },
   "dependencies": {
     "body-parser-xml": "^2.0.3",
