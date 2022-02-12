@@ -1,7 +1,7 @@
-const https = require('https');
-const http = require('http');
+import https from 'https';
+import http from 'http';
 
-const { pipeline } = require('stream');
+import { pipeline } from 'stream';
 
 const MAX_REDIRECTS = 10;
 
@@ -72,7 +72,7 @@ const PASSTHROUGH_RES_HEADERS = [
  * @param {String} url - URL to fetch from server
  * @param {Object} options
  */
-const proxify_request = function (req, res, url, options, _recursion_level) {
+export const proxify_request = function (req, res, url, options, _recursion_level) {
     console.log('SimpleProxy:', url);
     if (typeof _recursion_level !== 'number') { _recursion_level = 0; }
 
@@ -132,7 +132,8 @@ const proxify_request = function (req, res, url, options, _recursion_level) {
     proxy_request.end();
 };
 
-if (require.main === module) {
+
+if (false) { // CommonJS (require.main === module)
     const server = http.createServer(function (req, res) {
         let url;
         const BASE_PATH = "/url/";
@@ -171,4 +172,4 @@ if (require.main === module) {
  * - Follow Redirects without lib: https://stackoverflow.com/a/45777753 and https://stackoverflow.com/a/54162633
  */
 
- module.exports = { proxify_request };
+export default { proxify_request };

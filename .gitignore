@@ -1,3 +1,9 @@
+# Testdata
+/doc/unpub/
+
+# Configdata
+*.appstor.json
+
 # Logs
 logs
 *.log

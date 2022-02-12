@@ -1,0 +1,60 @@
+body {
+  /* padding: 15px; */
+  /* background-color: rgb(49, 48, 68); */
+}
+
+.logo {
+  border: 1px solid rgb(64, 72, 94);
+}
+
+.container {
+  padding: 20px;
+  padding-bottom: 0;
+}
+
+#providers article:first-child {
+  margin-top: 0;
+}
+
+#providers button {
+  padding: 6px;
+}
+
+/******************** Toast by https://www.w3schools.com/howto/howto_js_snackbar.asp */
+
+/* The snackbar - position it at the bottom and in the middle of the screen */
+#toast {
+  visibility: hidden; /* Hidden by default. Visible on click */
+  min-width: 320px; /* Set a default minimum width */
+  width: 320px;
+  margin-left: -160px; /* Divide value of min-width by 2 */
+  background-color: #333; /* Black background color */
+  color: rgb(196, 196, 196); /* White text color */
+  text-align: center; /* Centered text */
+  border-radius: 2px; /* Rounded borders */
+  padding: 16px; /* Padding */
+  position: fixed; /* Sit on top of the screen */
+  z-index: 1; /* Add a z-index if needed */
+  /* /* left: 50%; */ /* Center the snackbar */
+  left: 50%;
+  bottom: 30px; /* 30px from the bottom */
+  /* font-size: 12px; */
+}
+
+/* Show the snackbar when clicking on a button (class added with JavaScript) */
+#toast.show {
+  visibility: visible; /* Show the snackbar */
+  animation: fadein 0.5s, fadeout 0.5s 2.5s;
+  animation-fill-mode: forwards; /* https://stackoverflow.com/a/4362947 */
+}
+
+/* Animations to fade the snackbar in and out */
+@keyframes fadein {
+  from {opacity: 0;}
+  to {opacity: 0.9;}
+}
+
+@keyframes fadeout {
+  from {opacity: 0.9;}
+  to {opacity: 0;}
+}

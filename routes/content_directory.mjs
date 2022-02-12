@@ -1,9 +1,9 @@
-var express = require('express');
-const { escape_xml } = require('../utils/xml');
+import express from 'express';
+import { escape_xml } from '../utils/xml.mjs';
 
-var router = express.Router();
+const router = express.Router();
 
-const provider_manager = require('../providers/manager');
+import provider_manager from '../providers/manager.mjs';
 
 const DLNA_MIMETYPE_LOOKUP = {
     "audio/mpeg": "DLNA.ORG_PN=MP3",
@@ -32,9 +32,12 @@ const dlna_generate_video_xml = function (spec) {
     const { element, parent_id, local_url_generator, provider_id } = spec;
 
     const video_id = element.dlna_id;
-    const video_url = local_url_generator(`/proxy/stream/${provider_id}/${video_id}`);
+    let video_url = local_url_generator(`/proxy/stream/${provider_id}/${video_id}`);
+    if (element.stream_url) {
+        video_url = local_url_generator(`/proxy/url/${encodeURIComponent(element.stream_url)}`);
+    }
     const dlna_item_id = `${parent_id}/${video_id}`;
-    const thumbnail_url = local_url_generator(`/proxy/url/${element.thumbnail_url}`);
+    const thumbnail_url = local_url_generator(`/proxy/url/${encodeURIComponent(element.thumbnail_url)}`);
     const thumbnail_mimetype = element.thumbnail_mimetype || 'image/jpeg';
 
     let thumbnail_xml = '';
@@ -82,7 +85,7 @@ const dlna_generate_directory_xml = function (spec) {
 };
 
 /* GET users listing. */
-router.all('/control.xml', function (req, res, next) {
+router.all('/control.xml', async function (req, res, next) {
     //console.log("!!! control.xml !!!", req.rawHeaders, "\nBODY:", req.body);
 
     /** TODO: probably more cleaner way for getting server's ip https://stackoverflow.com/a/38426473
@@ -105,7 +108,7 @@ router.all('/control.xml', function (req, res, next) {
 
     // console.log({object_id, starting_index, requested_count});
 
-    const { listing, provider_id } = provider_manager.handle_directory_request({ dlna_path, starting_index, requested_count });
+    const { listing, provider_id } = await provider_manager.handle_directory_request({ dlna_path, starting_index, requested_count });
 
     const xml_array = listing.map(element => {
         let xml_generator = dlna_generate_directory_xml;
@@ -123,7 +126,7 @@ router.all('/control.xml', function (req, res, next) {
         ${ xml_array.join("\n") }
     </DIDL-Lite>`;
 
-    console.log("!!!!!!!!! ControlService:", results);
+    // console.log("!!!!!!!!! ControlService:", results);
 
     /* TODO: <TotalMatches> */
     const m = `<s:Envelope s:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" xmlns:s="http://schemas.xmlsoap.org/soap/envelope/">
@@ -142,4 +145,4 @@ router.all('/control.xml', function (req, res, next) {
     res.type('text/xml').send(m);
 });
 
-module.exports = router;
+export default router;

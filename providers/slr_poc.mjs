@@ -1,5 +1,5 @@
 //import got from 'got';
-const {simple_get} = require('../utils/simple-http');
+import {simple_get} from '../utils/simple-http.mjs';
 
 /** Free Videos: https://www.czechvr.com/free-full-vr-porn-videos-download */
 
@@ -113,6 +113,7 @@ const SLR_PoC = function () {
                 const entry = {
                     type: 'vid',
                     dlna_id: `${i},${resolution}`,
+                    stream_url: scene.video_urls[resolution],
                     displayname: `${scene.title}_180_180x180_3dh_LR.mp4`,
                     thumbnail_url: scene.thumbnail,
                     thumbnail_mimetype: 'image/jpeg',
@@ -141,4 +142,4 @@ const SLR_PoC = function () {
 
 const slr_poc = SLR_PoC();
 
-module.exports = slr_poc;
+export default slr_poc;
