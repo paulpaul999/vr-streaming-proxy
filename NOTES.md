@@ -55,5 +55,11 @@ npx electron-forge import
 npm run make
 ```
 
+Packaging with electron-builder
+
+```
+yarn add electron-builder --dev
+```
+
 ## Misc
 - Rest syntax: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax#spread_in_object_literals
