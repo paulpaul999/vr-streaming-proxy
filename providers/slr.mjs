@@ -155,7 +155,15 @@ const SLR = function () {
         console.log('SLR loaded', json);
         return json;
     };
-    const state = __load_state(STATEFILE);
+    // const state = __load_state(STATEFILE);
+
+    // TODO: load state from file again
+    const state = async function () {
+        return {
+            auth: { sessionID: "0" },
+            db: []
+        }
+    }();
 
     const selected_studios = [
         224, // SLR Originals
