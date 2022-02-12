@@ -205,21 +205,18 @@ const SLR = function () {
     self.get_displayname = function () { return DISPLAYNAME; };
 
     self.set_cookies = async function (cookies) {
-        let json = [];
+        let sess = [];
         try {
-            json = JSON.parse(cookies);
+            const json = JSON.parse(cookies);
+            sess = json.reduce((previous, current) => {
+                if (current.name.toLowerCase() === 'sess' && current.domain.toLowerCase().includes('sexlikereal')) {
+                    return current.value;
+                }
+                return previous;
+            }, undefined);
         } catch (error) {
-            if (error instanceof SyntaxError) {
-                return { logged_in: false, msg: ['Invalid cookie format'] };
-            }
+            return { logged_in: false, msg: ['Invalid cookie format'] };
         }
-
-        const sess = json.reduce((previous, current) => {
-            if (current.name.toLowerCase() === 'sess' && current.domain.toLowerCase().includes('sexlikereal')) {
-                return current.value;
-            }
-            return previous;
-        }, undefined);
         
         if (!sess) { return { logged_in: false, msg: ['No "sess" Cookie found.'] }; }
 
@@ -321,38 +318,31 @@ const SLR = function () {
     };
 
     const ROUTING_TABLE = {
-        varname: 'resolution',
-        list: { max: 'Prefer 5k+', mid: 'Prefer 4k' },
-        stop_routing: false,
+        varname: undefined, /* if varname is undefined dlna_id is not stored */
+        list: {
+            all_scenes: 'All Scenes',
+            studios: 'Studios',
+            fav_models: 'Favourite Models'
+        },
         subroutes: {
-            $default: {
-                varname: undefined, /* if varname is undefined dlna_id is not stored */
-                list: {
-                    all_scenes: 'All Scenes',
-                    studios: 'Studios',
-                    fav_models: 'Favourite Models'
-                },
+            all_scenes: {
+                list: req => self._list_videos_by_api_request({ ...req }, { show_jav_scenes: false })
+            },
+            studios: {
+                varname: 'studio_id',
+                list: req => self._list_studios(),
                 subroutes: {
-                    all_scenes: {
-                        list: req => self._list_videos_by_api_request({ ...req }, { show_jav_scenes: false })
-                    },
-                    studios: {
-                        varname: 'studio_id',
-                        list: req => self._list_studios(),
-                        subroutes: {
-                            $default: {
-                                list: req => self._list_videos_by_api_request({ ...req }, { studio: req.$vars.studio_id, results: MAX_REQ_SCENES_COUNT })
-                            }
-                        }
-                    },
-                    fav_models: {
-                        varname: 'model_id',
-                        list: req => self._list_fav_models({ ...req }),
-                        subroutes: {
-                            $default: {
-                                list: req => self._list_videos_by_api_request({ ...req }, { model: req.$vars.model_id })
-                            }
-                        }
+                    $default: {
+                        list: req => self._list_videos_by_api_request({ ...req }, { studio: req.$vars.studio_id, results: MAX_REQ_SCENES_COUNT })
+                    }
+                }
+            },
+            fav_models: {
+                varname: 'model_id',
+                list: req => self._list_fav_models({ ...req }),
+                subroutes: {
+                    $default: {
+                        list: req => self._list_videos_by_api_request({ ...req }, { model: req.$vars.model_id })
                     }
                 }
             }
