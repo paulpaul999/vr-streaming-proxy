@@ -1,4 +1,4 @@
-# dlna-proxy
+# vr-streaming-proxy
 
 Proxy to enable true internet streaming for DLNA video players.
 
@@ -11,15 +11,15 @@ Support via `bitcoin:bc1qwthpp9xtqlq84598436phgze3dkzx8g7egseph`
 - npm
 
 
-Download the source as [ZIP archive](https://github.com/paulpaul999/dlna-proxy/archive/refs/heads/main.zip) **OR** clone it with git:
+Download the source as [ZIP archive](https://github.com/paulpaul999/vr-streaming-proxy/archive/refs/heads/main.zip) **OR** clone it with git:
 
 ```
-git clone https://github.com/paulpaul999/dlna-proxy.git
+git clone https://github.com/paulpaul999/vr-streaming-proxy.git
 ```
 
 Then change into the directory, install dependencies:
 
-    cd dlna-proxy
+    cd vr-streaming-proxy
     npm install
 
 Finally, run the server with:

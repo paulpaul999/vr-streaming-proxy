@@ -38,7 +38,7 @@
 
 run the app:
 
-    SET DEBUG=dlna-proxy:* & npm start
+    SET DEBUG=vr-streaming-proxy:* & npm start
 
 reset npm cache:
 

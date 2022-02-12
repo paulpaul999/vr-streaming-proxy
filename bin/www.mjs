@@ -6,7 +6,7 @@
 
  import app from '../app.mjs';
  import debug from 'debug';
- debug('dlna-proxy:server');
+ debug('vr-streaming-proxy:server');
  import http from 'http';
  
  /**

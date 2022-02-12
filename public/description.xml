@@ -7,13 +7,13 @@
   </specVersion>
   <device>
     <deviceType>urn:schemas-upnp-org:device:MediaServer:1</deviceType>
-    <friendlyName>DLNA Proxy</friendlyName>
+    <friendlyName>VR Streaming Proxy</friendlyName>
     <manufacturer>paulpaul999</manufacturer>
     <manufacturerURL>https://github.com/paulpaul999/</manufacturerURL>
-    <modelDescription>DLNA Proxy - Media Server</modelDescription>
-    <modelName>DLNAProxy</modelName>
+    <modelDescription>VR Streaming Proxy - Media Server</modelDescription>
+    <modelName>VRStreamingProxy</modelName>
     <modelNumber>1.0</modelNumber>
-    <modelURL>https://github.com/paulpaul999/dlna-proxy/</modelURL>
+    <modelURL>https://github.com/paulpaul999/vr-streaming-proxy/</modelURL>
     <UDN>uuid:00d4b1ad-0458-4c90-bbce-bf381b8b00b5</UDN>
     <dlna:X_DLNADOC xmlns:dlna="urn:schemas-dlna-org:device-1-0">DMS-1.50</dlna:X_DLNADOC>
     <serviceList>
