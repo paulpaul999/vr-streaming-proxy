@@ -15,3 +15,7 @@ body {
 #providers article:first-child {
   margin-top: 0;
 }
+
+#providers button {
+  padding: 6px;
+}

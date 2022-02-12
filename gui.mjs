@@ -6,11 +6,13 @@ const __dirname = path.dirname(__filename);
 import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
 
-const GUI = function () {
+const GUI = function (spec) {
     const self = {};
+    const { provider_manager } = spec; 
 
-    const { app, BrowserWindow, ipcMain, nativeTheme } = require('electron')
-    const path = require('path')
+    const { app, BrowserWindow, ipcMain, nativeTheme, clipboard } = require('electron');
+
+    const path = require('path');
 
     const createWindow = function () {
         const win = new BrowserWindow({
@@ -23,9 +25,10 @@ const GUI = function () {
 
         win.loadFile(path.join(__dirname, 'public', 'electron', 'index.html'));
 
-        ipcMain.handle('provider:set-cookies', (event, provider_id) => {
+        ipcMain.handle('provider:set-cookies', async function (event, provider_id) {
             console.log('provider:set-cookies', provider_id);
-            return {hallo: "welt", eins: 54321};
+            const clipboard_text = clipboard.readText();
+            return await provider_manager.provider(provider_id).set_cookies(clipboard_text);
         });
 
         ipcMain.handle('gui:state', () => {

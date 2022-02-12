@@ -126,6 +126,19 @@ SLR_API.get_models = async function (query, auth) {
     return json.list;
 };
 
+SLR_API.get_checkuserpayment = async function (auth) {
+    const headers = { "Content-Type": "application/x-www-form-urlencoded" };
+    if (auth !== undefined) { headers.cookie = `sess=${auth}`; }
+    const json = await got_slr('https://api.sexlikereal.com/api/checkuserpayment', {
+        method: 'POST',
+        headers: headers,
+    }).json();
+    console.log('checkuserpayment');
+    console.log(json)
+    const is_logged_in = json.code === 1 && json.status === 'success';
+    return is_logged_in;
+};
+
 const SLR = function () {
     const PROVIDER_ID = 'slr';
     const DISPLAYNAME = 'SLR (Premium)'
@@ -190,6 +203,40 @@ const SLR = function () {
 
     self.get_provider_id = function () { return PROVIDER_ID; };
     self.get_displayname = function () { return DISPLAYNAME; };
+
+    self.set_cookies = async function (cookies) {
+        let json = [];
+        try {
+            json = JSON.parse(cookies);
+        } catch (error) {
+            if (error instanceof SyntaxError) {
+                return { logged_in: false, msg: 'Invalid cookie format' };
+            }
+        }
+
+        const sess = json.reduce((previous, current) => {
+            if (current.name.toLowerCase() === 'sess' && current.domain.toLowerCase().includes('sexlikereal')) {
+                return current.value;
+            }
+            return previous;
+        }, undefined);
+        
+        if (!sess) { return { logged_in: false, msg: 'No "sess" Cookie found.' }; }
+
+        const auth = (await state).auth;
+        auth.sessionID = sess;
+        return self.is_logged_in();
+    };
+
+    self.is_logged_in = async function () {
+        const auth = (await state).auth.sessionID;
+        const is_logged_in = await SLR_API.get_checkuserpayment(auth);
+        let result = { logged_in: false, msg: `Cookie: ${auth}` }
+        if (is_logged_in) {
+            result.logged_in = true;
+        }
+        return result;
+    };
 
     self._list_studios = async function () {
         const studios = await studios_promise;

@@ -48,7 +48,7 @@ import GUI from './gui.mjs';
 // console.log("ENV PROXY_SHOW_GUI:", HIDE_GUI, `<type: ${typeof HIDE_GUI}>`);
 const IS_ELECTRON = typeof process !== 'undefined' && typeof process.versions === 'object' && Boolean(process.versions.electron);
 if (IS_ELECTRON) {
-    const gui = GUI();
+    const gui = GUI({ provider_manager });
 }
 
 /* --------------------------------------------- */

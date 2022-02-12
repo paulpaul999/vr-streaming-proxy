@@ -1,7 +1,7 @@
 "use strict";
 
 const listener_set_cookies = async function (event) {
-    const state = await window.electron_api.provider_set_cookies(event.target.dataset.providerId);
+    const state = await window.electron_api.provider_set_cookies(this.dataset.providerId);
     console.log(state);
 };
 
