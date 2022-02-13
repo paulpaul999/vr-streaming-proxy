@@ -8,8 +8,12 @@
   "build": {
     "appId": "org.paulpaul999.vrsp",
     "productName": "VR Streaming Proxy",
+    "asar": false,
     "mac": {
       "category": "public.app-category.entertainment"
+    },
+    "win": {
+      "target": "portable"
     }
   },
   "type": "module",
