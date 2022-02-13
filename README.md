@@ -1,10 +1,28 @@
-# vr-streaming-proxy
+# VR Streaming Proxy
 
 Proxy to enable true internet streaming for DLNA video players.
 
-![screenshot](doc/screenshot.png "Screenshot")
+![screenshot](doc/screenshot_small.png "Screenshot")
 
 ## Tutorial
+
+**Prerequisites**
+
+- [Download](https://github.com/paulpaul999/vr-streaming-proxy/releases) and run VR Streaming Proxy.
+- Install *EditThisCookie* extension in your browser: [Chrome](https://chrome.google.com/webstore/detail/editthiscookie/fngmhnnpilhplaeedifhccceomclgfbg), [Firefox](https://addons.mozilla.org/de/firefox/addon/etc2/)
+
+**Step 1**
+
+Log into your SLR account and copy your cookies.
+
+![screenshot](doc/tutorial/step_editthiscookie.png "Screenshot")
+
+**Step 2**
+
+
+
+
+
 
 ## Install and run from source code
 
