@@ -8,7 +8,7 @@ Proxy to enable true internet streaming for DLNA video players.
 
 **Prerequisites**
 
-- [Download](https://github.com/paulpaul999/vr-streaming-proxy/releases) and run VR Streaming Proxy.
+- [Download](https://github.com/paulpaul999/vr-streaming-proxy/releases) and run *VR Streaming Proxy*.
 - Install *EditThisCookie* extension in your browser: [Chrome](https://chrome.google.com/webstore/detail/editthiscookie/fngmhnnpilhplaeedifhccceomclgfbg), [Firefox](https://addons.mozilla.org/de/firefox/addon/etc2/)
 
 **Step 1**
@@ -19,11 +19,9 @@ Log into your SLR account and copy your cookies.
 
 **Step 2**
 
-
+Paste cookies in *VR Streaming Proxy*
 
 ![screenshot](doc/tutorial/step_vrsp.png "Screenshot")
-
-
 
 
 ## Install and run from source code
