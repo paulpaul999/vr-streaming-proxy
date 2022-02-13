@@ -2,7 +2,7 @@
 
 Proxy to enable true internet streaming for DLNA video players.
 
-![screenshot](doc/screenshot_small.png "Screenshot")
+![screenshot](doc/overview.png "Screenshot")
 
 ## Tutorial
 
@@ -15,11 +15,13 @@ Proxy to enable true internet streaming for DLNA video players.
 
 Log into your SLR account and copy your cookies.
 
-![screenshot](doc/tutorial/step_editthiscookie.png "Screenshot")
+![editthiscookie](doc/tutorial/step_editthiscookie.png "EditThisCookie")
 
 **Step 2**
 
 
+
+![screenshot](doc/tutorial/step_vrsp.png "Screenshot")
 
 
 
