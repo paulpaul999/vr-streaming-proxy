@@ -17,7 +17,8 @@
       "category": "public.app-category.entertainment"
     },
     "linux": {
-      "target": "AppImage"
+      "target": "AppImage",
+      "category": "AudioVideo"
     }
   },
   "type": "module",
