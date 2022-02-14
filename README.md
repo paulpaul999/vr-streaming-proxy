@@ -13,13 +13,13 @@ Proxy to enable true internet streaming for DLNA video players.
 
 **Step 1**
 
-Log into your SLR account and copy your cookies.
+Log into your SLR account and copy your cookies with *EditThisCookie*.
 
 ![editthiscookie](doc/tutorial/step_editthiscookie.png "EditThisCookie")
 
 **Step 2**
 
-Paste cookies in *VR Streaming Proxy*
+Paste cookies to *VR Streaming Proxy*
 
 ![screenshot](doc/tutorial/step_vrsp.png "Screenshot")
 
