@@ -85,11 +85,20 @@ const _slr_select_stream_url = function (scene) {
     return source.url;
 };
 
+const _slr_scene_is_jav = function (scene) {
+    const contains_jav_category = scene.categories.some(category => {
+        const tag_name = category?.tag?.name;
+        const niche_name = category?.niche?.name;
+        return tag_name.toLowerCase() === 'jav' || niche_name.toLowerCase() === 'jav';
+    });
+    return contains_jav_category;
+};
+
 const SLR_API = {};
 
 const got_slr = got.extend({
     headers: {
-        'user-agent': "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/40.0.2214.111 Chrome/40.0.2214.111 Safari/537.36 HMD/0 [DEO8.3]",
+        'user-agent': 'VRStreamingProxy/1.0' || "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/40.0.2214.111 Chrome/40.0.2214.111 Safari/537.36 HMD/0 [DEO8.3]",
     }
 });
 
@@ -304,10 +313,12 @@ const SLR = function () {
     self._list_videos_by_api_request = async function (spec, api_parameters) {
         const auth = (await state).auth.sessionID;
         const scenes = await SLR_API.get_scenes({ results: MAX_REQ_SCENES_COUNT, show_jav_scenes: false, ...api_parameters }, auth);
-        scenes.forEach(scene => { /* TODO: introduce auto-adding to db after server response */
+        const scene_ids = scenes
+        .filter(scene => !_slr_scene_is_jav(scene))
+        .map(scene => { /* TODO: introduce auto-adding to db after server response */
             scenes_db[scene.id] = scene;
+            return scene.id;
         });
-        const scene_ids = scenes.map(scene => scene.id);
         return self._list_videos_by_scene_ids({...spec, scene_ids});
     };
 
@@ -350,7 +361,7 @@ const SLR = function () {
                 list: req => self._list_fav_models({ ...req }),
                 subroutes: {
                     $default: {
-                        list: req => self._list_videos_by_api_request({ ...req }, { model: req.$vars.model_id })
+                        list: req => self._list_videos_by_api_request({ ...req }, { model: parseInt(req.$vars.model_id) })
                     }
                 }
             }
