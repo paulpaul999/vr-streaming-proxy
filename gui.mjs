@@ -25,22 +25,6 @@ const GUI = function (spec) {
 
         win.loadFile(path.join(__dirname, 'public', 'electron', 'index.html'));
 
-        ipcMain.handle('provider:set-cookies', async function (event, provider_id) {
-            console.log('provider:set-cookies', provider_id);
-            const clipboard_text = clipboard.readText();
-            return await provider_manager.provider(provider_id).set_cookies(clipboard_text);
-        });
-
-        ipcMain.handle('gui:state', async function () {
-            const state = {
-                providers: {
-                    slr: {
-                        status: await provider_manager.provider('slr').get_status()
-                    }
-                }
-            }
-            return state;
-        });
     };
 
     app.whenReady().then(() => {
@@ -57,6 +41,23 @@ const GUI = function (spec) {
         if (process.platform !== 'darwin') {
             app.quit()
         }
+    });
+
+    ipcMain.handle('provider:set-cookies', async function (event, provider_id) {
+        console.log('provider:set-cookies', provider_id);
+        const clipboard_text = clipboard.readText();
+        return await provider_manager.provider(provider_id).set_cookies(clipboard_text);
+    });
+
+    ipcMain.handle('gui:state', async function () {
+        const state = {
+            providers: {
+                slr: {
+                    status: await provider_manager.provider('slr').get_status()
+                }
+            }
+        };
+        return state;
     });
 };
 
