@@ -143,7 +143,7 @@ const SLR = function () {
     const PROVIDER_ID = 'slr';
     const DISPLAYNAME = 'SLR (Premium)'
     const STATEFILE = 'slr.appstor.json';
-    const MAX_REQ_SCENES_COUNT = 250;
+    const MAX_REQ_SCENES_COUNT = 150;
     
     const self = {};
 
@@ -303,7 +303,7 @@ const SLR = function () {
 
     self._list_videos_by_api_request = async function (spec, api_parameters) {
         const auth = (await state).auth.sessionID;
-        const scenes = await SLR_API.get_scenes({ results: MAX_REQ_SCENES_COUNT, ...api_parameters }, auth);
+        const scenes = await SLR_API.get_scenes({ results: MAX_REQ_SCENES_COUNT, show_jav_scenes: false, ...api_parameters }, auth);
         scenes.forEach(scene => { /* TODO: introduce auto-adding to db after server response */
             scenes_db[scene.id] = scene;
         });
@@ -334,7 +334,7 @@ const SLR = function () {
         },
         subroutes: {
             all_scenes: {
-                list: req => self._list_videos_by_api_request({ ...req }, { show_jav_scenes: false })
+                list: req => self._list_videos_by_api_request({ ...req }, {})
             },
             studios: {
                 varname: 'studio_id',
