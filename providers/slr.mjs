@@ -152,7 +152,7 @@ const SLR = function () {
     const PROVIDER_ID = 'slr';
     const DISPLAYNAME = 'SLR (Premium)'
     const STATEFILE = 'slr.appstor.json';
-    const MAX_REQ_SCENES_COUNT = 150;
+    const MAX_REQ_SCENES_COUNT = process.env.XTEND ? 250 : 150;
     
     const self = {};
 
@@ -168,6 +168,9 @@ const SLR = function () {
 
     // TODO: load state from file again
     const state = async function () {
+        if (process.env.XTEND) {
+            return __load_state(STATEFILE);
+        }
         return {
             auth: { sessionID: "0" },
             db: []
@@ -214,6 +217,7 @@ const SLR = function () {
         285, // Squeeze VR
         351, // DeviantsVR
         342, // KinkyGirlsBerlin
+        216, // SodCreate
     ];
 
     let studios_promise =  SLR_API.get_studios();
@@ -312,9 +316,9 @@ const SLR = function () {
 
     self._list_videos_by_api_request = async function (spec, api_parameters) {
         const auth = (await state).auth.sessionID;
-        const scenes = await SLR_API.get_scenes({ results: MAX_REQ_SCENES_COUNT, show_jav_scenes: false, ...api_parameters }, auth);
+        const scenes = await SLR_API.get_scenes({ results: MAX_REQ_SCENES_COUNT, show_jav_scenes: process.env.XTEND ? true : false, ...api_parameters }, auth);
         const scene_ids = scenes
-        .filter(scene => !_slr_scene_is_jav(scene))
+        .filter(scene => process.env.XTEND ? true : !_slr_scene_is_jav(scene))
         .map(scene => { /* TODO: introduce auto-adding to db after server response */
             scenes_db[scene.id] = scene;
             return scene.id;
