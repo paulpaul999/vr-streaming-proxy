@@ -99,12 +99,20 @@ router.all('/control.xml', async function (req, res, next) {
         return url_obj.toString();
     };
 
-    const browse = req.body['s:Envelope']['s:Body'][0]['u:Browse'][0];
-    const object_id = browse.ObjectID[0];
-    const starting_index = parseInt(browse.StartingIndex[0]);
-    const requested_count = parseInt(browse.RequestedCount[0]);
-    const dlna_path = object_id;
-
+    let dlna_path = undefined;
+    let starting_index = undefined;
+    let requested_count = undefined;
+    try {
+        const browse = req.body['s:Envelope']['s:Body'][0]['u:Browse'][0];
+        const object_id = browse.ObjectID[0];
+        starting_index = parseInt(browse.StartingIndex[0]);
+        requested_count = parseInt(browse.RequestedCount[0]);
+        dlna_path = object_id;
+    } catch (error) {
+        dlna_path = "0";
+        starting_index = 0;
+        requested_count = 1;
+    }
 
     // console.log({object_id, starting_index, requested_count});
 
